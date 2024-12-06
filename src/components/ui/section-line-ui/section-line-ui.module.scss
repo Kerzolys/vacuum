@@ -1,0 +1,20 @@
+.line {
+  width: 100%;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.5); // Прозрачная белая линия
+  backdrop-filter: blur(5px); // Создаёт эффект размытия фона через линию
+  position: relative; // Линия остаётся над фоном
+  z-index: 2; // Убедимся, что она выше фона
+  // animation: fadeInLine 3s ease-in-out forwards;
+  opacity: 0; // Линия скрыта изначально
+  transform: translateX(-500px); // Сдвинута влево
+  transition: all 3s ease-in-out;
+  &_backward {
+    transform: translateX(500px); 
+
+  }
+  &.line_visible {
+    opacity: 1; // Появляется
+    transform: translateX(0); // Возвращается на место
+  }
+}

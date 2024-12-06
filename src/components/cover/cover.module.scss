@@ -1,0 +1,64 @@
+.cover {
+  position: relative;
+  padding-inline: 120px;
+  padding-block-start: 120px;
+  // padding: 0;
+  overflow: hidden; // Убедиться, что контент не выходит за пределы контейнера
+  min-inline-size: 320px;
+  min-block-size: 100vh;
+  @media screen and (max-width: 768px) {
+    padding-inline: 20px;
+    padding-block-start: 120px;
+  }
+  &__video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1; // Находится позади других элементов
+    display: block;
+    width: 100vw; // Занимает всю ширину экрана
+    height: 100vh; // Высота равна высоте экрана
+    margin: 0;
+    border: 0;
+    padding: 0;
+    object-fit: cover; // Масштабирует видео, чтобы оно заполнило весь контейнер
+    outline: 0;
+    opacity: 0.2; // Прозрачность видео
+    min-inline-size: 1440px;
+    animation: fadeVideoIn 7s forwards;
+    @media screen and (max-width: 768px) {
+      left: -50%;
+    }
+  }
+  &__image {
+    object-fit: cover;
+    animation: fadeLogoIn 3s forwards;
+    inline-size: 80%;
+    max-inline-size: 300px;
+    block-size: 80%;
+    @media screen and (max-width: 768px) {
+      inline-size: 50%;
+      block-size: 50%;
+    }
+  }
+}
+
+@keyframes fadeLogoIn {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeVideoIn {
+  from { 
+    opacity: 0;
+  }
+  to {
+    opacity: .2;
+  }
+}

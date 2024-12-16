@@ -1,0 +1,22 @@
+.slider {
+  position: relative;
+  width: 100%;
+  max-inline-size: 700px;
+  aspect-ratio: 4/3;
+  height: 100%;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  border-radius: 10px;
+  &__slide {
+    display: flex;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+
+    &.slider__slide_activeSlide {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}

@@ -1,0 +1,15 @@
+.slide {
+  position: absolute;
+  z-index: 10;
+  inline-size: 100%;
+  max-inline-size: 700px;
+  aspect-ratio: 4/3;
+  // block-size: 100%;
+  padding: 0;
+  margin: 0;
+  &__image{
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: contain;
+  } 
+}

@@ -31,3 +31,10 @@ export type TContact = {
   link: string;
   id?: string;
 };
+
+export type TUser = {
+  email: string;
+  password: string;
+  accessToken: string;
+  refreshToken: string;
+}

@@ -4,8 +4,11 @@ import {
   useDispatch as dispatchHook,
   useSelector as selectorHook,
 } from "react-redux";
+import userReducer from '../../features/userSlice.ts/userSlice'
 
-export const rootReducer = combineReducers({});
+export const rootReducer = combineReducers({
+  user: userReducer
+});
 
 const store = configureStore({
   reducer: rootReducer,

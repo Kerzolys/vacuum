@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/app/App';
 import reportWebVitals from './reportWebVitals';
-import './services/firebase/firebase';
 import { Provider } from 'react-redux';
 import store from './services/store/store';
 import { BrowserRouter } from 'react-router-dom';
 
+import './services/firebase/firebase';
 import './utils/styles/index.css';
 
 const root = ReactDOM.createRoot(

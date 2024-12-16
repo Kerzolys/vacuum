@@ -5,13 +5,17 @@ import {
   useSelector as selectorHook,
 } from "react-redux";
 import userReducer from '../../features/userSlice.ts/userSlice'
+import { eventsApi } from '../../features/events/events';
 
 export const rootReducer = combineReducers({
-  user: userReducer
+  user: userReducer,
+  [eventsApi.reducerPath]: eventsApi.reducer
 });
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(eventsApi.middleware)
 });
 
 export type RootState = ReturnType<typeof store.getState>;

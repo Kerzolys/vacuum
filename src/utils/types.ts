@@ -5,12 +5,12 @@ export type TBio = {
 };
 
 export type TEvent = {
-  date: string;
-  time: string;
-  location: string;
-  title: string;
-  program: string[];
-  link: string;
+  date?: string;
+  time?: string;
+  location?: string;
+  title?: string;
+  program?: string[];
+  link?: string;
   id?: string;
 };
 

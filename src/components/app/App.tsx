@@ -4,12 +4,12 @@ import { Admin } from '../../pages/admin/admin';
 import { useDispatch, useSelector } from '../../services/store/store';
 import { checkAuth, userSelector } from '../../features/userSlice.ts/userSlice';
 import { useEffect } from 'react';
+import { useGetEventsQuery } from '../../features/events/events';
 
 function App() {
   const { user, loading, isAuth } = useSelector(userSelector)
   const dispatch = useDispatch()
-
-  console.log(isAuth)
+  // const { data: events, isLoading, isError } = useGetEventsQuery()
 
   useEffect(() => {
     dispatch(checkAuth())

@@ -1,6 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import type { TEvent } from "../../utils/types";
 import { firebaseBaseQuery } from "../../services/firebase/firebaseBaseQuery";
+import { url } from "inspector";
 
 export const eventsApi = createApi({
   reducerPath: "eventsApi",
@@ -9,8 +10,9 @@ export const eventsApi = createApi({
     getEvents: builder.query<TEvent[], void>({
       query: () => ({ url: "events", method: "GET" }),
     }),
-    addEvent: builder.mutation<void, TEvent>({
-      query: (newEvent) => ({ url: "events", method: "POST", body: newEvent }),
+    addEvent: builder.mutation<TEvent, TEvent>({
+      query: (newEvent) => {
+        return({ url: "events", method: "POST", body: newEvent })},
     }),
     updateEvent: builder.mutation<void, TEvent>({
       query: (updatedEvent) => ({
@@ -19,12 +21,14 @@ export const eventsApi = createApi({
         body: updatedEvent,
       }),
     }),
-    deleteEvent: builder.mutation<void, TEvent>({
-      query: (eventId) => ({
-        url: `events/${eventId.id}`,
+    deleteEvent: builder.mutation<void, string>({
+      query: (eventId) => {
+        debugger
+        console.log('eventId',eventId)
+        return ({
+        url: `events/${eventId}`,
         method: "DELETE",
-        body: eventId,
-      }),
+      })},
     }),
   }),
 });

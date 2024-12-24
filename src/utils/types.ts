@@ -9,7 +9,7 @@ export type TEvent = {
   time?: string;
   location?: string;
   title?: string;
-  program?: string[];
+  program: string[];
   link?: string;
   id?: string;
 };

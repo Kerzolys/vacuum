@@ -8,6 +8,7 @@ export const testEvents: TEvent[] = [
     title: 'Conference on Technological Advancements',
     program: ['Introduction to AI', 'Evolution of AI', 'Impact of AI on Society'],
     link: 'https://www.example.com/event1',
+    id: '1',
   },
   {
     date: '2022-01-02',
@@ -16,6 +17,7 @@ export const testEvents: TEvent[] = [
     title: 'Workshop on Blockchain Development',
     program: ['Introduction to Blockchain', 'Blockchain Technology', 'Case Studies'],
     link: 'https://www.example.com/event2',
+    id: '2',
   },
   // Add more events as needed...
 ]

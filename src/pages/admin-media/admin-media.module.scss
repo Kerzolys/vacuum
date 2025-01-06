@@ -1,0 +1,22 @@
+.videos{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 20px;
+  padding: 20px;
+
+}
+.video {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  &__title {
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  &__buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+}

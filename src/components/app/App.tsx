@@ -4,9 +4,9 @@ import { Admin } from '../../pages/admin/admin';
 import { useDispatch, useSelector } from '../../services/store/store';
 import { checkAuth, userSelector } from '../../features/userSlice.ts/userSlice';
 import { useEffect } from 'react';
-import { useGetEventsQuery } from '../../features/events/events';
 import { AdminEvents } from '../../pages/admin-events/admin-events';
 import { AdminMedia } from '../../pages/admin-media/admin-media';
+import { AdminGallery } from '../../pages/admin-gallery/admin-gallery';
 
 function App() {
   const { user, loading, isAuth } = useSelector(userSelector)
@@ -22,6 +22,8 @@ function App() {
       <Route path="/admin" element={<Admin />}></Route>
       <Route path="/admin/events" element={<AdminEvents />}></Route>
       <Route path="/admin/media" element={<AdminMedia />}></Route>
+      <Route path="/admin/gallery" element={<AdminGallery />}></Route>
+
 
     </Routes>
   </>

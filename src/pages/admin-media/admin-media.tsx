@@ -1,15 +1,19 @@
 import useSWR, { mutate } from 'swr'
-import { addVideo, deleteVideo, fetchVideos } from '../../services/fetcher/fetcher'
+import { addVideo, deleteVideo, editVideo, fetchVideos } from '../../services/fetcher/fetcher'
 import { PreloaderUI } from '../../components/ui/preloader-ui/preloader-ui'
 import { convertToEmbedUrl } from '../../features/hooks/convertToEmbed'
 import { ButtonUI } from '../../components/ui/button-ui/button-ui'
-import { Add, Delete } from '@mui/icons-material'
+import { Add, Delete, Edit } from '@mui/icons-material'
 import { ButtonUIProps } from '../../components/ui/button-ui/type'
 import { InputUIProps } from '../../components/ui/input-ui/type'
 import { TVideo } from '../../utils/types'
 import { useState } from 'react'
 import { ModalUI } from "../../components/ui/modal-ui/modal-ui";
 import { FormUI } from "../../components/ui/form-ui/form-ui";
+import { ModalConfirmation } from '../../components/modal-confirmation/modal-confirmation'
+
+import styles from './admin-media.module.scss'
+import { AdminLayoutUI } from '../../components/ui/admin-layout-ui/admin-layout-ui'
 
 export const AdminMedia = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -24,8 +28,8 @@ export const AdminMedia = () => {
   const { data, error, isLoading } = useSWR('videos', fetchVideos)
   const updatedData = data?.map(video => ({
     ...video,
-    link: video.link ? convertToEmbedUrl(video.link) : ''
-  }))
+    link: video.link.includes('embed') ? video.link : convertToEmbedUrl(video.link),
+  }));
 
   const handleOpenAdd = () => {
     setValues({
@@ -47,9 +51,26 @@ export const AdminMedia = () => {
     }
   }
 
+  const handleOpenEdit = (event: TVideo) => {
+    setValues(event)
+    setModalType('edit')
+    setIsOpen(true)
+  }
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
+    try {
+      const updatedVideo = await editVideo(values);
+      mutate('videos', (currentVideos: TVideo[] = []) => currentVideos.map(video => video.id === updatedVideo.id ? updatedVideo : video), false)
+      setIsOpen(false)
+    } catch (err) {
+      console.error(`Error editing video: ${err}`);
+    }
+  }
 
+  const handleOpenDelete = (event: TVideo) => {
+    setValues(event)
+    setModalType('delete')
+    setIsOpen(true)
   }
 
   const handleDelete = async (videoId: string) => {
@@ -73,6 +94,8 @@ export const AdminMedia = () => {
     evt.preventDefault()
     console.log('submitted')
   }
+
+  const handleClose = () => setIsOpen(false)
 
 
   const inputs: InputUIProps[] = [
@@ -153,23 +176,43 @@ export const AdminMedia = () => {
 
   return (
     <>
-      <h1>Admin Media</h1>
-      <div>
-        {updatedData && updatedData.map(video => (
-          <div key={video.id}>
-            <h2>{video.title}</h2>
-            <iframe width="560" height="315" src={video.link} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-            {video.id && <ButtonUI buttonText='Delete' startIcon={<Delete />} onClick={() => handleDelete(video.id!)} />}
-          </div>
-        ))}
+      <AdminLayoutUI>
+        <div className={styles.videos}>
 
-      </div>
-      <ButtonUI buttonText='Add' startIcon={<Add />} onClick={handleOpenAdd} />
-      {isOpen && modalType === 'add' && (
-        <ModalUI onClose={() => setIsOpen(false)}>
-          <FormUI inputs={inputs} buttons={buttons} onSubmit={handleSubmit} onChange={handleChange} formHeader='Добавить видео' />
-        </ModalUI>
-      )}
+          <div>
+            {updatedData && updatedData.map(video => (
+              <div className={styles.video} key={video.id}>
+                <h2 className={styles.video__title}>{video.title}</h2>
+                <iframe width="560" height="315" src={video.link} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                {video.id &&
+                  <div className={styles.video__buttons}>
+                    <ButtonUI buttonText='Delete' startIcon={<Delete />} onClick={() => handleOpenDelete(video)} />
+                    <ButtonUI buttonText="Edit" onClick={() => handleOpenEdit(video)} startIcon={<Edit />} />
+                  </div>
+                }
+                {isOpen && modalType === 'delete' ?
+                  <ModalConfirmation onCancel={handleClose} onConfirm={() => handleDelete(video.id!)} />
+                  : isOpen && modalType === 'edit' ? <ModalUI onClose={handleClose} >
+                    <FormUI
+                      inputs={inputs}
+                      buttons={buttons}
+                      onChange={handleChange}
+                      onSubmit={handleSubmit}
+                    />
+                  </ModalUI> : null
+                }
+              </div>
+            ))}
+
+          </div>
+          <ButtonUI buttonText='Add' startIcon={<Add />} onClick={handleOpenAdd} />
+          {isOpen && modalType === 'add' && (
+            <ModalUI onClose={() => setIsOpen(false)}>
+              <FormUI inputs={inputs} buttons={buttons} onSubmit={handleSubmit} onChange={handleChange} formHeader='Добавить видео' />
+            </ModalUI>
+          )}
+        </div>
+      </AdminLayoutUI>
     </>
   )
 }

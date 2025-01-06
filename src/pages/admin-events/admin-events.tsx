@@ -2,7 +2,6 @@ import { useState } from "react";
 import { ButtonUI } from "../../components/ui/button-ui/button-ui";
 import { EventUI } from "../../components/ui/event-ui/event-ui";
 import { PreloaderUI } from "../../components/ui/preloader-ui/preloader-ui";
-import { useAddEventMutation, useDeleteEventMutation, useGetEventsQuery, useUpdateEventMutation } from "../../features/events/events";
 import { ModalConfirmation } from "../../components/modal-confirmation/modal-confirmation";
 import { ModalUI } from "../../components/ui/modal-ui/modal-ui";
 import { FormUI } from "../../components/ui/form-ui/form-ui";
@@ -10,18 +9,17 @@ import { InputUIProps } from "../../components/ui/input-ui/type";
 import { ButtonUIProps } from "../../components/ui/button-ui/type";
 import { TEvent } from "../../utils/types";
 import { Add, Delete, Edit } from "@mui/icons-material";
+import useSWR, { mutate } from "swr";
+import { addEvent, deleteEvent, editEvent, fetchEvents } from "../../services/fetcher/fetcher";
+import { AdminLayoutUI } from "../../components/ui/admin-layout-ui/admin-layout-ui";
+
+import styles from './admin-events.module.scss'
 
 export const AdminEvents = ({ }) => {
-  const { data: events, isLoading, isError } = useGetEventsQuery()
-  const [addEvent] = useAddEventMutation()
-  const [deleteEvent] = useDeleteEventMutation()
-  const [updateEvent] = useUpdateEventMutation()
-  const { refetch } = useGetEventsQuery();
   const [isOpen, setIsOpen] = useState(false)
   const [modalType, setModalType] = useState<'add' | 'edit' | 'delete' | null>(null)
   const [values, setValues] = useState<TEvent>(
     {
-      // id: '',
       date: '',
       time: '',
       location: '',
@@ -31,10 +29,10 @@ export const AdminEvents = ({ }) => {
     }
   )
 
+  const { data, error, isLoading } = useSWR('events', fetchEvents)
+
   const handleOpenAdd = () => {
-    // setValues(event)
     setValues({
-      // id: '',
       date: '',
       time: '',
       location: '',
@@ -46,10 +44,30 @@ export const AdminEvents = ({ }) => {
     setIsOpen(true)
   }
 
+  const handleAdd = async () => {
+    try {
+      const newEvent = await addEvent(values);
+      mutate('events', (currentEvents: TEvent[] = []) => [...currentEvents, newEvent], false)
+      setIsOpen(false)
+    } catch (err) {
+      console.error(`Error adding event: ${err}`);
+    }
+  }
+
   const handleOpenEdit = (event: TEvent) => {
     setValues(event)
     setModalType('edit')
     setIsOpen(true)
+  }
+
+  const handleEdit = async () => {
+    try {
+      const updatedEvent = await editEvent(values)
+      mutate('events', (currentEvents: TEvent[] = []) => currentEvents.map(event => event.id === updatedEvent.id ? updatedEvent : event), false)
+      setIsOpen(false)
+    } catch (err) {
+      console.error(`Error editing event: ${err}`);
+    }
   }
 
   const handleOpenDelete = (event: TEvent) => {
@@ -59,51 +77,17 @@ export const AdminEvents = ({ }) => {
     setIsOpen(true)
   }
 
+  const handleDelete = async (eventId: string) => {
+    try {
+      await deleteEvent(eventId)
+      mutate('events', (currentEvents: TEvent[] = []) => currentEvents.filter(event => event.id !== eventId), false)
+      setIsOpen(false)
+    } catch (err) {
+      console.error(`Error deleting event: ${err}`);
+    }
+  }
+
   const handleClose = () => setIsOpen(false)
-
-  const handleAdd = async () => {
-    try {
-      if (values) {
-        const result = await addEvent(values).unwrap();
-        console.log(`New event has been added.`);
-        console.log('New event added with ID:', result.id);
-        refetch()
-        handleClose()
-      }
-    } catch (err) {
-      console.error(`Error adding event: ${err}`);
-    }
-  }
-  const handleEdit = async () => {
-    console.log('edit');
-    try {
-      if (values) {
-        await updateEvent(values).unwrap();
-        console.log(`Event with ID ${values.id} has been updated.`);
-        refetch()
-        handleClose()
-      }
-    } catch (err) {
-      console.error(`Error updating event: ${err} `);
-    }
-  }
-
-  const handleDelete = async (eventId: string | undefined) => {
-    console.log("Deleting Event:", eventId);
-    if(!eventId) return 
-    try {
-      if (values && values.id) {
-        const response = await deleteEvent(values.id);
-        console.log(response)
-        console.log(`Event with ID ${values.id} has been deleted.`);
-        refetch()
-        handleClose()
-      }
-    } catch (err) {
-      console.error(`Error deleting event: ${err} `);
-
-    }
-  }
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = evt.target;
@@ -255,7 +239,7 @@ export const AdminEvents = ({ }) => {
   const buttons: ButtonUIProps[] = [
     {
       buttonText: 'Закрыть',
-      onClick: () => setIsOpen(false),
+      onClick: handleClose,
       variant: 'contained',
       color: 'primary',
       sx: {
@@ -280,41 +264,48 @@ export const AdminEvents = ({ }) => {
   ]
 
   if (isLoading) return <PreloaderUI />
-  if (isError) return <p>Что-то пошло не так, но мы это исправим!</p>
-  if (!events || events.length === 0) return <p>Тут ничего нет, пора бы добавить!</p>
+  if (error) return <p>Что-то пошло не так, но мы это исправим!</p>
+  if (!data || data.length === 0) return <p>Тут ничего нет, пора бы добавить!</p>
+
   return (
-    <div>
-      {events.length > 0 && events.map(event => {
-        return (
-          <>
-            <EventUI key={event.id} event={event} />
-            <ButtonUI buttonText="Edit" onClick={() => handleOpenEdit(event)} startIcon={<Edit />} />
-            <ButtonUI buttonText="Delete" onClick={() => handleOpenDelete(event)} startIcon={<Delete />} />
-            {isOpen && modalType === 'delete' ?
-              <ModalConfirmation onCancel={handleClose} onConfirm={() => handleDelete(event.id)} />
-              : isOpen && modalType === 'edit' ? <ModalUI onClose={handleClose} >
-                <FormUI
-                  inputs={inputs}
-                  buttons={buttons}
-                  onChange={handleChange}
-                  onSubmit={handleSubmit}
-                />
-              </ModalUI> : null
-            }
-          </>
-        )
-      })}
-      <ButtonUI buttonText="Add" onClick={handleOpenAdd} startIcon={<Add />} />
-      {isOpen && modalType === 'add' &&
-        <ModalUI onClose={handleClose}>
-          <FormUI
-            inputs={inputs}
-            buttons={buttons}
-            onChange={handleChange}
-            onSubmit={handleSubmit}
-            formHeader="Добавить концерт"
-          />
-        </ModalUI>}
-    </div>
+    <>
+      <AdminLayoutUI>
+        <div className={styles.admin_events}>
+          {data.length > 0 && data.map(event => {
+            return (
+              <div className={styles.admin_events__event}>
+                <EventUI key={event.id} event={event} />
+                <div className={styles.admin_events__event__buttons}>
+                <ButtonUI buttonText="Edit" onClick={() => handleOpenEdit(event)} startIcon={<Edit />} />
+                <ButtonUI buttonText="Delete" onClick={() => handleOpenDelete(event)} startIcon={<Delete />} />
+                </div>
+                {isOpen && modalType === 'delete' ?
+                  <ModalConfirmation onCancel={handleClose} onConfirm={() => handleDelete(event.id!)} />
+                  : isOpen && modalType === 'edit' ? <ModalUI onClose={handleClose} >
+                    <FormUI
+                      inputs={inputs}
+                      buttons={buttons}
+                      onChange={handleChange}
+                      onSubmit={handleSubmit}
+                    />
+                  </ModalUI> : null
+                }
+              </div>
+            )
+          })}
+          <ButtonUI buttonText="Add" onClick={handleOpenAdd} startIcon={<Add />} />
+          {isOpen && modalType === 'add' &&
+            <ModalUI onClose={handleClose}>
+              <FormUI
+                inputs={inputs}
+                buttons={buttons}
+                onChange={handleChange}
+                onSubmit={handleSubmit}
+                formHeader="Добавить концерт"
+              />
+            </ModalUI>}
+        </div>
+      </AdminLayoutUI>
+    </>
   );
 }

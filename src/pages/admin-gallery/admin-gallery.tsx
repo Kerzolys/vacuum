@@ -5,11 +5,13 @@ import useSWR, { mutate } from "swr"
 import { addImage, deleteImage, editImage, fetchImages } from "../../services/fetcher/fetcher"
 import { PreloaderUI } from "../../components/ui/preloader-ui/preloader-ui"
 import { ButtonUI } from "../../components/ui/button-ui/button-ui"
-import { Add } from "@mui/icons-material"
+import { Add, Delete, Edit } from "@mui/icons-material"
 import { FormUI } from "../../components/ui/form-ui/form-ui"
 import { ModalUI } from "../../components/ui/modal-ui/modal-ui"
 import { InputUIProps } from "../../components/ui/input-ui/type"
 import { ButtonUIProps } from "../../components/ui/button-ui/type"
+
+import styles from './admin-gallery.module.scss'
 
 export const AdminGallery = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -148,13 +150,25 @@ export const AdminGallery = () => {
 
   if (isLoading) return <PreloaderUI />
   if (error) return <p>Что-то пошло не так, но мы это исправим!</p>
-  // if (!data || data.length === 0) return <p>Тут ничего нет, пора бы добавить!</p>
   return (
     <>
       <AdminLayoutUI>
         <>
           {!data || data.length === 0 && (
             <p>Тут ничего нет, пора бы добавить!</p>
+          )}
+          {data!.length > 0 && (
+            <ul>
+              {data!.map(image => (
+                <li key={image.id}>
+                  <img className={styles.image} src={image.link} alt={image.title} />
+                  <div>
+                    <ButtonUI buttonText="Edit" onClick={() => handleOpenEdit(image)} startIcon={<Edit />} />
+                    <ButtonUI buttonText="Delete" onClick={() => handleOpenDelete(image)} startIcon={<Delete />} />
+                  </div>
+                </li>
+              ))}
+            </ul>
           )}
           <ButtonUI buttonText="Add" onClick={handleOpenAdd} startIcon={<Add />} />
           {isOpen && modalType === 'add' && (

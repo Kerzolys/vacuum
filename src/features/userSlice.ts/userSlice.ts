@@ -36,20 +36,13 @@ export const signUpUser = createAsyncThunk(
       }
       return user;
     } catch (error: any) {
-      // dispatch(loginFailure(error));
-      // let errorMessage = "SignUp failed. Please try again later.";
-      // if (error.code === "auth/email-already-in-use") {
-      //   errorMessage = "This email is already registered.";
-      // } else if (error.code === "auth/invalid-email") {
-      //   errorMessage = "Invalid email address.";
-      // }
       const errorMessage =
         error.code === "auth/email-already-in-use"
           ? "This email is already registered."
           : error.code === "auth/invalid-email"
             ? "Invalid email address."
             : "SignUp failed. Please try again later.";
-      // console.log(errorMessage);
+
       dispatch(loginFailure(errorMessage));
       throw new Error(errorMessage);
     }

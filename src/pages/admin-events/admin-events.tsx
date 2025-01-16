@@ -15,7 +15,7 @@ import { AdminLayoutUI } from "../../components/ui/admin-layout-ui/admin-layout-
 
 import styles from './admin-events.module.scss'
 
-export const AdminEvents = ({ }) => {
+export const AdminEvents = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [modalType, setModalType] = useState<'add' | 'edit' | 'delete' | null>(null)
   const [values, setValues] = useState<TEvent>(
@@ -71,7 +71,6 @@ export const AdminEvents = ({ }) => {
   }
 
   const handleOpenDelete = (event: TEvent) => {
-    console.log(event)
     setValues(event)
     setModalType('delete')
     setIsOpen(true)
@@ -99,7 +98,6 @@ export const AdminEvents = ({ }) => {
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault()
-    console.log('submitted')
   }
 
   const inputs: InputUIProps[] = [
@@ -264,14 +262,13 @@ export const AdminEvents = ({ }) => {
   ]
 
   if (isLoading) return <PreloaderUI />
-  if (error) return <p>Что-то пошло не так, но мы это исправим!</p>
-  if (!data || data.length === 0) return <p>Тут ничего нет, пора бы добавить!</p>
+  if (error) return <p className={styles.admin_events__event__error}>Что-то пошло не так, но мы это исправим!</p>
 
   return (
     <>
       <AdminLayoutUI>
         <div className={styles.admin_events}>
-          {data.length > 0 && data.map(event => {
+          {data!.length > 0 ? data!.map(event => {
             return (
               <div className={styles.admin_events__event}>
                 <EventUI key={event.id} event={event} />
@@ -292,7 +289,7 @@ export const AdminEvents = ({ }) => {
                 }
               </div>
             )
-          })}
+          }) : <p className={styles.admin_events__event__error}>Тут ничего нет, пора бы добавить!</p>}
           <ButtonUI buttonText="Add" onClick={handleOpenAdd} startIcon={<Add />} />
           {isOpen && modalType === 'add' &&
             <ModalUI onClose={handleClose}>

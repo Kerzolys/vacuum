@@ -9,7 +9,7 @@ import styles from './admin.module.scss'
 
 export const Admin = ({ }) => {
   const { user, loading, isAuth } = useSelector(userSelector)
-  console.log(isAuth)
+
   if(loading) return <PreloaderUI />
   return (
     <div className={styles.container}>

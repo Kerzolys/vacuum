@@ -17,5 +17,9 @@
       display: flex;
       gap: 10px;
     }
+    &__error {
+      color: red;
+      margin-top: 10px;
+    }
   }
 }

@@ -7,9 +7,55 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { TEvent, TImage, TVideo } from "../../utils/types";
+import { TBio, TEvent, TImage, TVideo } from "../../utils/types";
 import { db, storage } from "../firebase/firebase";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
+
+export const fetchBio = async (): Promise<TBio[]> => {
+  const bioCollection = collection(db, "bio");
+  const bioSnapshot = await getDocs(bioCollection);
+  const bioList = await bioSnapshot.docs.map((doc) => ({
+    id: doc.id,
+    paragraph: doc.data().paragraph,
+    position: doc.data().position,
+  }));
+
+  return bioList;
+}
+
+export const addBio = async (bio: TBio) => {
+  try{
+    const docRef = doc(collection(db, 'bio'))
+    const newBio = await setDoc(docRef, bio)
+    return { id: docRef.id,...bio };
+  } catch (err) {
+    console.error(`Error adding bio: ${err}`);
+    throw err;
+  }
+}
+
+export const editBio = async (bio: TBio) => {
+  try {
+    if (!bio.id) {
+      throw new Error("Bio ID is required");
+    }
+    const docRef = doc(db, "bio", bio.id);
+    await updateDoc(docRef, {...bio });
+    return { id: docRef.id,...bio };
+  } catch (err) {
+    console.error(`Error editing bio: ${err}`);
+    throw err;
+  }
+}
+export const deleteBio = async (id: string) => {
+  try {
+    const docRef = doc(db, "bio", id);
+    await deleteDoc(docRef);
+  } catch (err) {
+    console.error(`Error deleting bio: ${err}`);
+    throw err;
+  }
+}
 
 export const fetchEvents = async (): Promise<TEvent[]> => {
   const eventsCollection = collection(db, "events");

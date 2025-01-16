@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { AdminEvents } from '../../pages/admin-events/admin-events';
 import { AdminMedia } from '../../pages/admin-media/admin-media';
 import { AdminGallery } from '../../pages/admin-gallery/admin-gallery';
+import { AdminAbout } from '../../pages/admin-about/admin-about';
 
 function App() {
   const { user, loading, isAuth } = useSelector(userSelector)
@@ -20,6 +21,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />}></Route>
       <Route path="/admin" element={<Admin />}></Route>
+      <Route path="/admin/about" element={<AdminAbout />}></Route>
       <Route path="/admin/events" element={<AdminEvents />}></Route>
       <Route path="/admin/media" element={<AdminMedia />}></Route>
       <Route path="/admin/gallery" element={<AdminGallery />}></Route>

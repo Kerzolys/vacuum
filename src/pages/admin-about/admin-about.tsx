@@ -30,7 +30,9 @@ export const AdminAbout = () => {
     position: 0,
   });
 
-  const { data, error, isLoading } = useSWR("images", fetchBio);
+  const { data, error, isLoading } = useSWR("bio", fetchBio);
+
+  const bio = data || [];
 
   const handleOpenAdd = () => {
     setValues({
@@ -45,7 +47,7 @@ export const AdminAbout = () => {
     try {
       const newBio = await addBio(values);
       mutate(
-        "events",
+        "bio",
         (currentBios: TBio[] = []) => [...currentBios, newBio],
         false
       );
@@ -65,7 +67,7 @@ export const AdminAbout = () => {
     try {
       const updatedBio = await editBio(values);
       mutate(
-        "events",
+        "bio",
         (currentBios: TBio[] = []) =>
           currentBios.map((bio) =>
             bio.id === updatedBio.id ? updatedBio : bio
@@ -88,7 +90,7 @@ export const AdminAbout = () => {
     try {
       await deleteBio(bioId);
       mutate(
-        "events",
+        "bio",
         (currentBios: TBio[] = []) =>
           currentBios.filter((bio) => bio.id !== bioId),
         false
@@ -124,6 +126,17 @@ export const AdminAbout = () => {
       required: true,
       color: "primary",
       helperText: "Введите текст пара��рафа",
+      sx: {
+        "& .MuiInputBase-input": {
+          color: "#fff", // ��вет текста внутри поля
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderColor: "#fff", // ��вет обводки внутри поля
+        },
+        "& .MuiInputLabel-root": {
+          color: "#fff", // Цвет лейбла
+        },
+      },
     },
     {
       label: "Позиция",
@@ -134,35 +147,47 @@ export const AdminAbout = () => {
       error: values.position ? "" : "Поле должно быть заполненным",
       required: true,
       color: "primary",
-      helperText: "Введите номер позиции пара��рафа",
+      helperText: "Введите номер позиции параграфа",
+      sx: {
+        "& .MuiInputBase-input": {
+          color: "#fff", // ��вет текста внутри поля
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderColor: "#fff", // ��вет обводки внутри поля
+        },
+        "& .MuiInputLabel-root": {
+          color: "#fff", // Цвет лейбла
+        },
+      },
     },
+    
   ];
   const buttons: ButtonUIProps[] = [
     {
-      buttonText: 'Закрыть',
+      buttonText: "Закрыть",
       onClick: handleClose,
-      variant: 'contained',
-      color: 'primary',
+      variant: "contained",
+      color: "primary",
       sx: {
-        '&.Mui-disabled': {
-          backgroundColor: '#555', // Серый фон для неактивной кнопки
-          color: '#fff', // Белый текст для контраста
+        "&.Mui-disabled": {
+          backgroundColor: "#555", // Серый фон для неактивной кнопки
+          color: "#fff", // Белый текст для контраста
         },
       },
     },
     {
-      buttonText: 'Сохранить',
-      onClick: () => (modalType === 'add' ? handleAdd() : handleEdit()),
-      variant: 'contained',
-      color: 'primary',
+      buttonText: "Сохранить",
+      onClick: () => (modalType === "add" ? handleAdd() : handleEdit()),
+      variant: "contained",
+      color: "primary",
       sx: {
-        '&.Mui-disabled': {
-          backgroundColor: '#555', // Серый фон для неактивной кнопки
-          color: '#fff', // Белый текст для контраста
+        "&.Mui-disabled": {
+          backgroundColor: "#555", // Серый фон для неактивной кнопки
+          color: "#fff", // Белый текст для контраста
         },
       },
     },
-  ]
+  ];
 
   if (isLoading) return <PreloaderUI />;
   if (error)
@@ -175,43 +200,45 @@ export const AdminAbout = () => {
   return (
     <>
       <AdminLayoutUI>
-        {data!.length > 0 ? (
-          data!.map((bio) => {
-            return (
-              <div className={styles.admin_events__event}>
-                <ParagraphUI key={bio.id} paragraph={bio} />
-                <div className={styles.admin_events__event__buttons}>
-                  <ButtonUI
-                    buttonText="Edit"
-                    onClick={() => handleOpenEdit(bio)}
-                    startIcon={<Edit />}
-                  />
-                  <ButtonUI
-                    buttonText="Delete"
-                    onClick={() => handleOpenDelete(bio)}
-                    startIcon={<Delete />}
-                  />
-                </div>
-                {isOpen && modalType === "delete" ? (
-                  <ModalConfirmation
-                    onCancel={handleClose}
-                    onConfirm={() => handleDelete(bio.id!)}
-                  />
-                ) : isOpen && modalType === "edit" ? (
-                  <ModalUI onClose={handleClose}>
-                    <FormUI
-                      inputs={inputs}
-                      buttons={buttons}
-                      onChange={handleChange}
-                      onSubmit={handleSubmit}
+        {bio.length > 0 ? (
+          bio
+            .sort((a, b) => a.position - b.position)
+            .map((bio) => {
+              return (
+                <div className={styles.admin_bios__bio}>
+                  <ParagraphUI key={bio.id} paragraph={bio} />
+                  <div className={styles.admin_bios__bio__buttons}>
+                    <ButtonUI
+                      buttonText="Edit"
+                      onClick={() => handleOpenEdit(bio)}
+                      startIcon={<Edit />}
                     />
-                  </ModalUI>
-                ) : null}
-              </div>
-            );
-          })
+                    <ButtonUI
+                      buttonText="Delete"
+                      onClick={() => handleOpenDelete(bio)}
+                      startIcon={<Delete />}
+                    />
+                  </div>
+                  {isOpen && modalType === "delete" ? (
+                    <ModalConfirmation
+                      onCancel={handleClose}
+                      onConfirm={() => handleDelete(bio.id!)}
+                    />
+                  ) : isOpen && modalType === "edit" ? (
+                    <ModalUI onClose={handleClose}>
+                      <FormUI
+                        inputs={inputs}
+                        buttons={buttons}
+                        onChange={handleChange}
+                        onSubmit={handleSubmit}
+                      />
+                    </ModalUI>
+                  ) : null}
+                </div>
+              );
+            })
         ) : (
-          <p className={styles.admin_events__event__error}>
+          <p className={styles.admin_bios__bio__error}>
             Тут ничего нет, пора бы добавить!
           </p>
         )}

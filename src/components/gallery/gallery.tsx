@@ -12,7 +12,6 @@ export const Gallery = () => {
   const images = data || [];
   return (
     <section id="gallery" className={styles.gallery}>
-      <h1>Gallery</h1>
       <Slider content={images} isAutoplay={false} type="image" />
     </section>
   );

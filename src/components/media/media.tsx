@@ -22,7 +22,6 @@ export const Media = () => {
 
   return (
     <section id='media' className={styles.media}>
-      <h1 className={styles.media__title}>Media</h1>
       {updatedData && <Slider isAutoplay={false} content={updatedData} type='video' />}
     </section>
   )

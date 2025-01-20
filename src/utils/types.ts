@@ -1,7 +1,7 @@
 export type TBio = {
   paragraph: string;
   id?: string;
-  position?: number;
+  position: number;
 };
 
 export type TEvent = {

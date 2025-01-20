@@ -1,16 +1,13 @@
 .media {
-  padding-inline: 120px;
-  padding-block: 120px;
+  display: flex;
+  justify-content: center;
   background-image: url('../../assets/images/media-section.jpg'); // Указываем путь к фото
   background-attachment: fixed;
   background-size: cover; // Подгоняем фото под контейнер
   background-position: center; // Центрируем фото
   position: relative; // Устанавливаем контекст позиционирования для дочерних элементов
   z-index: 1;
-  @media screen and (max-width: 768px) {
-    padding-inline: 20px;
-    padding-block-start: 120px;
-  }
+  padding-inline: 10px;
   &:before {
     content: '';
     position: absolute;

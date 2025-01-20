@@ -46,7 +46,6 @@ export const Slider: React.FC<SliderProps> = ({
       setCurrentSlide(
         currentSlide === content.length - 1 ? 0 : currentSlide + 1
       );
-      // console.log('next', currentSlide)
     }
   };
   const previousSlide = () => {
@@ -54,7 +53,6 @@ export const Slider: React.FC<SliderProps> = ({
       setCurrentSlide(
         currentSlide === 0 ? content.length - 1 : currentSlide - 1
       );
-      // console.log('prev', currentSlide)
     }
   };
 

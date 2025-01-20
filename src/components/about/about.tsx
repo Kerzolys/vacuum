@@ -16,7 +16,9 @@ export const About = ({}) => {
       <SectionLineUI />
       <h1 className={styles.about__title}>About Us</h1>
       {bio.length > 0 &&
-        bio.map((bio) => {
+        bio
+        .sort((a, b) =>a.position - b.position)
+        .map((bio) => {
           return <ParagraphUI paragraph={bio} key={bio.id} />;
         })}
       <SectionLineUI isForward={false} />

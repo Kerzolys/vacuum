@@ -6,6 +6,7 @@ import ArrowBack from "@mui/icons-material/ArrowBack";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { SliderUI } from "../ui/slider-ui/slider-ui";
 import { Button } from "@mui/material";
+import classNames from "classnames";
 
 export const Slider: React.FC<SliderProps> = ({
   content,
@@ -106,7 +107,7 @@ export const Slider: React.FC<SliderProps> = ({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <Button onClick={previousSlide} className={styles.slider__button}>
+      <Button onClick={previousSlide} className={classNames(styles.slider__button, styles.slider__button_back)}>
         <ArrowBack style={{ color: "white", fontSize: "48px" }} />
       </Button>
       <SliderUI
@@ -115,7 +116,7 @@ export const Slider: React.FC<SliderProps> = ({
         type={type}
         currentSlide={currentSlide}
       />
-      <Button onClick={nextSlide} className={styles.slider__button}>
+      <Button onClick={nextSlide} className={classNames(styles.slider__button, styles.slider__button_forward)}>
         <ArrowForward style={{ color: "white", fontSize: "48px" }} />
       </Button>
     </div>

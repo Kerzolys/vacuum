@@ -23,7 +23,7 @@
     padding: 0;
     object-fit: cover; // Масштабирует видео, чтобы оно заполнило весь контейнер
     outline: 0;
-    opacity: 0.2; // Прозрачность видео
+    opacity: 0.3; // Прозрачность видео
     min-inline-size: 1440px;
     animation: fadeVideoIn 7s forwards;
     @media screen and (max-width: 768px) {

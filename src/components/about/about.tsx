@@ -14,7 +14,6 @@ export const About = ({}) => {
   return (
     <section id="about" className={styles.about}>
       <SectionLineUI />
-      <h1 className={styles.about__title}>About Us</h1>
       {bio.length > 0 &&
         bio
         .sort((a, b) =>a.position - b.position)

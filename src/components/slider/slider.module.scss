@@ -11,8 +11,18 @@
     max-inline-size: 600px;
     display: flex;
     justify-content: center;
-    .slider__button{
-      display: none;
+    .slider__button {
+      // display: none;
+      position: absolute;
+      z-index: 11111;
+      block-size: 100%;
+        inline-size: 30px;
+      &_forward {
+        right: 0;
+      }
+      &_back {
+        left: 0;
+      }
     }
   }
 }

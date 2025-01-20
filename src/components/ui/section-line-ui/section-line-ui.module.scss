@@ -11,10 +11,14 @@
   transition: all 3s ease-in-out;
   &_backward {
     transform: translateX(500px); 
-
   }
   &.line_visible {
     opacity: 1; // Появляется
     transform: translateX(0); // Возвращается на место
+  }
+  @media screen and (max-width: 768px) {
+    opacity: 1; // Линия видима
+    transform: translateX(0); // Линия на месте (без анимации)
+    transition: none; // Без анимации
   }
 }

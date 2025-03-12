@@ -13,7 +13,7 @@ export const Cover = ({}) => {
           allow="autoplay; fullscreen"
           title="Background Video"
         /> */}
-      <video className={styles.cover__video} autoPlay loop muted controls width="100%">
+      <video className={styles.cover__video} autoPlay loop muted controls={false} width="100%">
         <source src="/assets/cover_video.mp4" type="video/mp4" />
       </video>
       {/* </div> */}

@@ -181,6 +181,15 @@ export const AdminGallery = () => {
               />
             </ModalUI>
           )}
+          {isOpen && modalType === 'delete' && (
+            <ModalUI onClose={handleClose}>
+              <p>Вы уверены, что хотите удалить изображение "{values.title}"?</p>
+              <div>
+                <ButtonUI buttonText="Отмена" onClick={handleClose} />
+                <ButtonUI buttonText="Удалить" onClick={handleDelete} variant="contained" color="error" />
+              </div>
+            </ModalUI>
+          )}
         </>
       </AdminLayoutUI>
     </>

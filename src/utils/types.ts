@@ -1,3 +1,5 @@
+import { FieldValue } from "firebase/firestore";
+
 export type TBio = {
   paragraph: string;
   id?: string;
@@ -12,6 +14,8 @@ export type TEvent = {
   program: string[];
   link?: string;
   id?: string;
+  createdAt?: string | FieldValue;
+  archived?: boolean;
 };
 
 export type TVideo = {

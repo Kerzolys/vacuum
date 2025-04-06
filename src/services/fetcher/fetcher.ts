@@ -4,12 +4,20 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  orderBy,
+  query,
+  serverTimestamp,
   setDoc,
   updateDoc,
 } from "firebase/firestore";
 import { TBio, TEvent, TImage, TVideo } from "../../utils/types";
 import { db, storage } from "../firebase/firebase";
-import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 
 export const fetchBio = async (): Promise<TBio[]> => {
   const bioCollection = collection(db, "bio");
@@ -21,18 +29,18 @@ export const fetchBio = async (): Promise<TBio[]> => {
   }));
 
   return bioList;
-}
+};
 
 export const addBio = async (bio: TBio) => {
-  try{
-    const docRef = doc(collection(db, 'bio'))
-    const newBio = await setDoc(docRef, bio)
-    return { id: docRef.id,...bio };
+  try {
+    const docRef = doc(collection(db, "bio"));
+    const newBio = await setDoc(docRef, bio);
+    return { id: docRef.id, ...bio };
   } catch (err) {
     console.error(`Error adding bio: ${err}`);
     throw err;
   }
-}
+};
 
 export const editBio = async (bio: TBio) => {
   try {
@@ -40,13 +48,13 @@ export const editBio = async (bio: TBio) => {
       throw new Error("Bio ID is required");
     }
     const docRef = doc(db, "bio", bio.id);
-    await updateDoc(docRef, {...bio });
-    return { id: docRef.id,...bio };
+    await updateDoc(docRef, { ...bio });
+    return { id: docRef.id, ...bio };
   } catch (err) {
     console.error(`Error editing bio: ${err}`);
     throw err;
   }
-}
+};
 export const deleteBio = async (id: string) => {
   try {
     const docRef = doc(db, "bio", id);
@@ -55,10 +63,14 @@ export const deleteBio = async (id: string) => {
     console.error(`Error deleting bio: ${err}`);
     throw err;
   }
-}
+};
 
 export const fetchEvents = async (): Promise<TEvent[]> => {
-  const eventsCollection = collection(db, "events");
+  // const eventsCollection = collection(db, "events");
+  const eventsCollection = query(
+    collection(db, "events"),
+    orderBy("createdAt", "desc")
+  );
   const eventsSnapshot = await getDocs(eventsCollection);
   const eventsList = await eventsSnapshot.docs.map((doc) => ({
     id: doc.id,
@@ -68,6 +80,8 @@ export const fetchEvents = async (): Promise<TEvent[]> => {
     location: doc.data().location,
     program: doc.data().program,
     link: doc.data().link,
+    createdAt: doc.data().createdAt,
+    archived: doc.data().archived,
   }));
 
   return eventsList;
@@ -76,8 +90,13 @@ export const fetchEvents = async (): Promise<TEvent[]> => {
 export const addEvent = async (event: TEvent) => {
   try {
     const docRef = doc(collection(db, "events"));
-    const newEvent = await setDoc(docRef, event);
-    return { id: docRef.id, ...event };
+    const fullEvent = {
+      ...event,
+      createdAt: serverTimestamp(), 
+      archived: false,
+    };
+    await setDoc(docRef, fullEvent);
+    return { id: docRef.id, ...fullEvent };
   } catch (err) {
     console.error(`Error adding event: ${err}`);
     throw err;
@@ -104,6 +123,17 @@ export const deleteEvent = async (eventId: string) => {
     await deleteDoc(docRef);
   } catch (err) {
     console.error(`Error deleting event: ${err}`);
+    throw err;
+  }
+};
+
+export const archiveEvent = async (eventId: string) => {
+  try {
+    const docRef = doc(db, "events", eventId);
+    await updateDoc(docRef, { archived: true });
+    console.log(docRef);
+  } catch (err) {
+    console.error(`Error archiving event: ${err}`);
     throw err;
   }
 };
@@ -195,7 +225,7 @@ export const editImage = async (image: TImage, file?: File) => {
     const docRef = doc(db, "images", image.id);
     let updatedLink = image.link;
     if (file) {
-      if(image.link) {
+      if (image.link) {
         const oldFileRef = ref(storage, `images/${image.id}`);
         await deleteObject(oldFileRef);
       }
@@ -215,9 +245,9 @@ export const editImage = async (image: TImage, file?: File) => {
 export const deleteImage = async (imageId: string, imageLink?: string) => {
   try {
     const docRef = doc(db, "images", imageId);
-    if(imageLink) {
+    if (imageLink) {
       const imageRef = ref(storage, `images/${imageId}`);
-      await deleteObject(imageRef)
+      await deleteObject(imageRef);
     }
     await deleteDoc(docRef);
   } catch (err) {

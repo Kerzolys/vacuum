@@ -197,7 +197,7 @@ export const addImage = async (file: File, title: string) => {
     const arrayBuffer = await file.arrayBuffer();
 
     const params = {
-      Bucket: process.env.REACT_APP_BUCKET_NAME || '',
+      Bucket: process.env.REACT_APP_YANDEX_BUCKET_NAME || '',
       Key: `images/${file.name}`,
       Body: arrayBuffer,
       ContentType: file.type,
@@ -231,7 +231,7 @@ export const deleteImage = async (imageId: string, imageLink?: string) => {
 
       await s3
         .deleteObject({
-          Bucket: process.env.REACT_APP_BUCKET_NAME || '',
+          Bucket: process.env.REACT_APP_YANDEX_BUCKET_NAME || '',
           Key: key,
         })
         .promise();

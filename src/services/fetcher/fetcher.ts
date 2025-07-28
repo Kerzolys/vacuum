@@ -214,6 +214,8 @@ export const addImage = async (file: File, title: string) => {
     const docRef = doc(collection(db, "images"));
     await setDoc(docRef, image);
 
+    console.log(uploadResult)
+
     return {
       id: docRef.id,
       ...image,

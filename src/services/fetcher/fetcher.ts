@@ -1,5 +1,4 @@
 import {
-  addDoc,
   collection,
   deleteDoc,
   doc,
@@ -11,13 +10,9 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { TBio, TEvent, TImage, TVideo } from "../../utils/types";
-import { db, storage } from "../firebase/firebase";
-import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadBytes,
-} from "firebase/storage";
+import { db } from "../firebase/firebase";
+
+import { BUCKET_NAME, s3 } from "../yandexCloud/yc";
 
 export const fetchBio = async (): Promise<TBio[]> => {
   const bioCollection = collection(db, "bio");
@@ -92,7 +87,7 @@ export const addEvent = async (event: TEvent) => {
     const docRef = doc(collection(db, "events"));
     const fullEvent = {
       ...event,
-      createdAt: serverTimestamp(), 
+      createdAt: serverTimestamp(),
       archived: false,
     };
     await setDoc(docRef, fullEvent);
@@ -186,72 +181,66 @@ export const deleteVideo = async (videoId: string) => {
 };
 
 export const fetchImages = async (): Promise<TImage[]> => {
-  try {
-    const imagesCollection = collection(db, "images");
-    const imagesSnapshot = await getDocs(imagesCollection);
-    const imagesList = await imagesSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      title: doc.data().title,
-      link: doc.data().link,
-    }));
+  const imagesCollection = collection(db, "images");
+  const imagesSnapshot = await getDocs(imagesCollection);
+  const imagesList = await imagesSnapshot.docs.map((doc) => ({
+    id: doc.id,
+    title: doc.data().title,
+    link: doc.data().link,
+  }));
 
-    return imagesList;
-  } catch (err) {
-    console.error(`Error fetching images: ${err}`);
-    throw err;
-  }
+  return imagesList;
 };
 
 export const addImage = async (file: File, title: string) => {
   try {
-    const storageRef = ref(storage, `images/${file.name}`);
-    const snapshot = await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(snapshot.ref);
-    const imagesCollection = collection(db, "images");
-    await addDoc(imagesCollection, { title, link: downloadURL });
-    console.log("Image successfully uploaded and metadata saved.");
-    return downloadURL;
-  } catch (err) {
-    console.error(`Error adding image: ${err}`);
-    throw err;
-  }
-};
+    const arrayBuffer = await file.arrayBuffer();
 
-export const editImage = async (image: TImage, file?: File) => {
-  try {
-    if (!image.id) {
-      throw new Error("Image ID is required");
-    }
-    const docRef = doc(db, "images", image.id);
-    let updatedLink = image.link;
-    if (file) {
-      if (image.link) {
-        const oldFileRef = ref(storage, `images/${image.id}`);
-        await deleteObject(oldFileRef);
-      }
-      const newFileRef = ref(storage, `images/${file.name}`);
-      await uploadBytes(newFileRef, file);
-      updatedLink = await getDownloadURL(newFileRef);
-    }
-    const updatedImage = { ...image, link: updatedLink };
-    await updateDoc(docRef, { ...image });
-    return { id: docRef.id, ...updatedImage };
+    const params = {
+      Bucket: BUCKET_NAME,
+      Key: `images/${file.name}`,
+      Body: arrayBuffer,
+      ContentType: file.type,
+      ACL: "public-read",
+    };
+
+    const uploadResult = await s3.upload(params).promise();
+
+    const image: TImage = {
+      title: title,
+      link: uploadResult.Location,
+    };
+
+    const docRef = doc(collection(db, "images"));
+    await setDoc(docRef, image);
+
+    return {
+      id: docRef.id,
+      ...image,
+    };
   } catch (err) {
-    console.error(`Error editing image: ${err}`);
+    console.error("Error uploading image:", err);
     throw err;
   }
 };
 
 export const deleteImage = async (imageId: string, imageLink?: string) => {
   try {
-    const docRef = doc(db, "images", imageId);
     if (imageLink) {
-      const imageRef = ref(storage, `images/${imageId}`);
-      await deleteObject(imageRef);
+      const key = new URL(imageLink).pathname.slice(1);
+
+      await s3
+        .deleteObject({
+          Bucket: BUCKET_NAME,
+          Key: key,
+        })
+        .promise();
+      const docRef = doc(db, "images", imageId);
+      await deleteDoc(docRef);
     }
-    await deleteDoc(docRef);
   } catch (err) {
-    console.error(`Error deleting image: ${err}`);
+    console.error("Error deleting image:", err);
     throw err;
   }
 };
+

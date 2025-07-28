@@ -1,92 +1,80 @@
-import { useState } from "react"
-import { AdminLayoutUI } from "../../components/ui/admin-layout-ui/admin-layout-ui"
-import { TImage } from "../../utils/types"
-import useSWR, { mutate } from "swr"
-import { addImage, deleteImage, editImage, fetchImages } from "../../services/fetcher/fetcher"
-import { PreloaderUI } from "../../components/ui/preloader-ui/preloader-ui"
-import { ButtonUI } from "../../components/ui/button-ui/button-ui"
-import { Add, Delete, Edit } from "@mui/icons-material"
-import { FormUI } from "../../components/ui/form-ui/form-ui"
-import { ModalUI } from "../../components/ui/modal-ui/modal-ui"
-import { InputUIProps } from "../../components/ui/input-ui/type"
-import { ButtonUIProps } from "../../components/ui/button-ui/type"
+import { useState } from "react";
+import { AdminLayoutUI } from "../../components/ui/admin-layout-ui/admin-layout-ui";
+import { TImage } from "../../utils/types";
+import useSWR, { mutate } from "swr";
+import {
+  addImage,
+  deleteImage,
+  fetchImages,
+} from "../../services/fetcher/fetcher";
+import { PreloaderUI } from "../../components/ui/preloader-ui/preloader-ui";
+import { ButtonUI } from "../../components/ui/button-ui/button-ui";
+import { Add, Delete, Edit } from "@mui/icons-material";
+import { FormUI } from "../../components/ui/form-ui/form-ui";
+import { ModalUI } from "../../components/ui/modal-ui/modal-ui";
+import { InputUIProps } from "../../components/ui/input-ui/type";
+import { ButtonUIProps } from "../../components/ui/button-ui/type";
 
-import styles from './admin-gallery.module.scss'
+import styles from "./admin-gallery.module.scss";
 
 export const AdminGallery = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [modalType, setModalType] = useState<'add' | 'edit' | 'delete' | null>(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const [modalType, setModalType] = useState<"add" | "edit" | "delete" | null>(
+    null
+  );
   const [values, setValues] = useState<TImage>({
-    title: '',
-    link: '',
-  })
+    title: "",
+    link: "",
+  });
   const [file, setFile] = useState<File | null>(null);
 
-  const { data, error, isLoading } = useSWR('images', fetchImages)
+  const { data, error, isLoading } = useSWR("images", fetchImages);
 
   const handleOpenAdd = () => {
     setValues({
-      title: '',
-      link: '',
+      title: "",
+      link: "",
     });
     setIsOpen(true);
-    setModalType('add');
+    setModalType("add");
   };
 
   const handleAdd = async () => {
     if (!file) {
-      alert('Выберите файл')
-      return
+      alert("Выберите файл");
+      return;
     }
     try {
       const downloadURL = await addImage(file, values.title);
-      await mutate('images')
-      alert('Файл успешно загружен')
+      await mutate("images");
+      alert("Файл успешно загружен");
       setIsOpen(false);
       setFile(null);
       setValues({
-        title: '',
-        link: '',
+        title: "",
+        link: "",
       });
     } catch (err) {
       console.error(`Error adding image: ${err}`);
     }
   };
 
-  const handleOpenEdit = (image: TImage) => {
-    setValues(image);
-    setIsOpen(true);
-    setModalType('edit');
-  };
-
-  const handleEdit = async () => {
-    try{
-      await editImage(values, file!)
-      alert('Изображение успешно отредактировано')
-      setIsOpen(false);
-      mutate('images')
-    } catch (err) {
-      console.error(`Error editing image: ${err}`);
-    }
-  }
-
   const handleOpenDelete = (image: TImage) => {
     setValues(image);
     setIsOpen(true);
-    setModalType('delete');
+    setModalType("delete");
   };
 
   const handleDelete = async () => {
     try {
-      await deleteImage(values.id!)
-      alert('Изображение успешно удалено')
+      await deleteImage(values.id!, values.link);
+      alert("Изображение успешно удалено");
       setIsOpen(false);
-      mutate('images')
+      mutate("images");
     } catch (err) {
       console.error(`Error deleting image: ${err}`);
     }
-  }
-
+  };
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = evt.target;
@@ -97,19 +85,20 @@ export const AdminGallery = () => {
   };
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
-    evt.preventDefault()
-  }
+    evt.preventDefault();
+  };
 
-  const handleClose = () => setIsOpen(false)
+  const handleClose = () => setIsOpen(false);
 
   const inputs: InputUIProps[] = [
     {
-      label: 'Title',
-      name: 'title',
-      type: 'text',
+      label: "Title",
+      name: "title",
+      type: "text",
       value: values.title,
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setValues({ ...values, title: e.target.value }),
-      error: ''
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+        setValues({ ...values, title: e.target.value }),
+      error: "",
     },
     {
       label: "Upload Image",
@@ -119,59 +108,69 @@ export const AdminGallery = () => {
         e.target.files && setFile(e.target.files[0]),
       error: "",
     },
-  ]
+  ];
 
   const buttons: ButtonUIProps[] = [
     {
-      buttonText: 'Закрыть',
+      buttonText: "Закрыть",
       onClick: handleClose,
-      variant: 'contained',
-      color: 'primary',
+      variant: "contained",
+      color: "primary",
       sx: {
-        '&.Mui-disabled': {
-          backgroundColor: '#555', // Серый фон для неактивной кнопки
-          color: '#fff', // Белый текст для контраста
+        "&.Mui-disabled": {
+          backgroundColor: "#555", // Серый фон для неактивной кнопки
+          color: "#fff", // Белый текст для контраста
         },
       },
     },
     {
-      buttonText: 'Сохранить',
-      onClick: () => (modalType === 'add' ? handleAdd() : handleEdit()),
-      variant: 'contained',
-      color: 'primary',
+      buttonText: "Сохранить",
+      onClick: () => handleAdd(),
+      variant: "contained",
+      color: "primary",
       sx: {
-        '&.Mui-disabled': {
-          backgroundColor: '#555', // Серый фон для неактивной кнопки
-          color: '#fff', // Белый текст для контраста
+        "&.Mui-disabled": {
+          backgroundColor: "#555", // Серый фон для неактивной кнопки
+          color: "#fff", // Белый текст для контраста
         },
       },
     },
-  ]
+  ];
 
-  if (isLoading) return <PreloaderUI />
-  if (error) return <p>Что-то пошло не так, но мы это исправим!</p>
+  if (isLoading) return <PreloaderUI />;
+  if (error) return <p>Что-то пошло не так, но мы это исправим!</p>;
   return (
     <>
       <AdminLayoutUI>
         <>
-          {!data || data.length === 0 && (
-            <p>Тут ничего нет, пора бы добавить!</p>
-          )}
+          {!data ||
+            (data.length === 0 && <p>Тут ничего нет, пора бы добавить!</p>)}
           {data!.length > 0 && (
             <ul>
-              {data!.map(image => (
+              {data!.map((image) => (
                 <li key={image.id}>
-                  <img className={styles.image} src={image.link} alt={image.title} />
+                  <img
+                    className={styles.image}
+                    src={image.link}
+                    alt={image.title}
+                  />
                   <div>
-                    <ButtonUI buttonText="Edit" onClick={() => handleOpenEdit(image)} startIcon={<Edit />} />
-                    <ButtonUI buttonText="Delete" onClick={() => handleOpenDelete(image)} startIcon={<Delete />} />
+                    <ButtonUI
+                      buttonText="Delete"
+                      onClick={() => handleOpenDelete(image)}
+                      startIcon={<Delete />}
+                    />
                   </div>
                 </li>
               ))}
             </ul>
           )}
-          <ButtonUI buttonText="Add" onClick={handleOpenAdd} startIcon={<Add />} />
-          {isOpen && modalType === 'add' && (
+          <ButtonUI
+            buttonText="Add"
+            onClick={handleOpenAdd}
+            startIcon={<Add />}
+          />
+          {isOpen && modalType === "add" && (
             <ModalUI onClose={handleClose}>
               <FormUI
                 inputs={inputs}
@@ -181,17 +180,25 @@ export const AdminGallery = () => {
               />
             </ModalUI>
           )}
-          {isOpen && modalType === 'delete' && (
+          {isOpen && modalType === "delete" && (
             <ModalUI onClose={handleClose}>
-              <p>Вы уверены, что хотите удалить изображение "{values.title}"?</p>
+              <p>
+                Вы уверены, что хотите удалить изображение "{values.title}"?
+              </p>
               <div>
                 <ButtonUI buttonText="Отмена" onClick={handleClose} />
-                <ButtonUI buttonText="Удалить" onClick={handleDelete} variant="contained" color="error" />
+                <ButtonUI
+                  buttonText="Удалить"
+                  onClick={handleDelete}
+                  variant="contained"
+                  color="error"
+                />
               </div>
             </ModalUI>
           )}
         </>
       </AdminLayoutUI>
     </>
-  )
-}
+  );
+};
+

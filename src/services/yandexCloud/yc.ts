@@ -11,6 +11,5 @@ const s3 = new AWS.S3({
   s3ForcePathStyle: false,
 });
 
-const BUCKET_NAME = "vacuum";
 
-export { s3, BUCKET_NAME };
+export default s3

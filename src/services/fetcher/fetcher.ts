@@ -12,7 +12,7 @@ import {
 import { TBio, TEvent, TImage, TVideo } from "../../utils/types";
 import { db } from "../firebase/firebase";
 
-import { BUCKET_NAME, s3 } from "../yandexCloud/yc";
+import s3 from "../yandexCloud/yc";
 
 export const fetchBio = async (): Promise<TBio[]> => {
   const bioCollection = collection(db, "bio");
@@ -197,11 +197,11 @@ export const addImage = async (file: File, title: string) => {
     const arrayBuffer = await file.arrayBuffer();
 
     const params = {
-      Bucket: BUCKET_NAME,
+      Bucket: process.env.REACT_APP_BUCKET_NAME || '',
       Key: `images/${file.name}`,
       Body: arrayBuffer,
       ContentType: file.type,
-      // ACL: "public-read",
+      ACL: "public-read",
     };
 
     const uploadResult = await s3.upload(params).promise();
@@ -213,8 +213,6 @@ export const addImage = async (file: File, title: string) => {
 
     const docRef = doc(collection(db, "images"));
     await setDoc(docRef, image);
-
-    console.log(uploadResult)
 
     return {
       id: docRef.id,
@@ -233,7 +231,7 @@ export const deleteImage = async (imageId: string, imageLink?: string) => {
 
       await s3
         .deleteObject({
-          Bucket: BUCKET_NAME,
+          Bucket: process.env.REACT_APP_BUCKET_NAME || '',
           Key: key,
         })
         .promise();
@@ -245,4 +243,3 @@ export const deleteImage = async (imageId: string, imageLink?: string) => {
     throw err;
   }
 };
-

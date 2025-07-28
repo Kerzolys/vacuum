@@ -11,5 +11,8 @@ const s3 = new AWS.S3({
   s3ForcePathStyle: false,
 });
 
+console.log(process.env.REACT_APP_YANDEX_BUCKET_NAME)
+
 
 export default s3
+

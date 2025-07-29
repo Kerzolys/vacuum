@@ -16,6 +16,7 @@ import s3 from "../yandexCloud/yc";
 import {
   DeleteObjectCommand,
   ListObjectsCommand,
+  ObjectCannedACL,
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import s3Client from "../yandexCloud/yc";
@@ -207,6 +208,7 @@ export const uploadToYandex = async (file: File) => {
     Body: new Uint8Array(arrayBuffer),
     ContentType: file.type,
     ChecksumAlgorithm: undefined,
+    ACL: ObjectCannedACL.public_read,
   };
 
   console.log({

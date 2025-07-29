@@ -195,6 +195,7 @@ export const fetchImages = async (): Promise<TImage[]> => {
     title: doc.data().title,
     link: doc.data().link,
   }));
+  console.log(imagesList)
 
   return imagesList;
 };
@@ -213,7 +214,7 @@ export const uploadToYandex = async (file: File) => {
 
   console.log({
     Bucket: "vacuum",
-    Key: `uploads/${file.name}`,
+    Key: `images/${file.name}`,
     ContentType: file.type,
     Body: Uint8Array,
   });
@@ -222,7 +223,7 @@ export const uploadToYandex = async (file: File) => {
 
   try {
     await s3Client.send(command);
-    return `https://storage.yandexcloud.net/${process.env.REACT_APP_YANDEX_BUCKET_NAME}/uploads/${file.name}`;
+    return `https://storage.yandexcloud.net/${process.env.REACT_APP_YANDEX_BUCKET_NAME}/images/${file.name}`;
   } catch (err) {
     console.error("Error uploading file:", err);
     throw err;
@@ -257,6 +258,7 @@ export const addImage = async (file: File, title: string) => {
     // const uploadResult = await s3.upload(params).promise();
 
     const link = await uploadToYandex(file);
+    console.log(link)
 
     const image: TImage = {
       title,

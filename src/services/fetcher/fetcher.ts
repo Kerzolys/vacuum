@@ -13,6 +13,12 @@ import { TBio, TEvent, TImage, TVideo } from "../../utils/types";
 import { db } from "../firebase/firebase";
 
 import s3 from "../yandexCloud/yc";
+import {
+  DeleteObjectCommand,
+  ListObjectsCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
+import s3Client from "../yandexCloud/yc";
 
 export const fetchBio = async (): Promise<TBio[]> => {
   const bioCollection = collection(db, "bio");
@@ -192,23 +198,68 @@ export const fetchImages = async (): Promise<TImage[]> => {
   return imagesList;
 };
 
+export const uploadToYandex = async (file: File) => {
+  const arrayBuffer = await file.arrayBuffer();
+
+  const params = {
+    Bucket: process.env.REACT_APP_YANDEX_BUCKET_NAME!,
+    Key: `images/${file.name}`,
+    Body: new Uint8Array(arrayBuffer),
+    ContentType: file.type,
+    ChecksumAlgorithm: undefined,
+  };
+
+  console.log({
+    Bucket: "vacuum",
+    Key: `uploads/${file.name}`,
+    ContentType: file.type,
+    Body: Uint8Array,
+  });
+
+  const command = new PutObjectCommand(params);
+
+  try {
+    await s3Client.send(command);
+    return `https://storage.yandexcloud.net/${process.env.REACT_APP_YANDEX_BUCKET_NAME}/uploads/${file.name}`;
+  } catch (err) {
+    console.error("Error uploading file:", err);
+    throw err;
+  }
+};
+
+const listObjects = async () => {
+  const result = await s3Client.send(
+    new ListObjectsCommand({
+      Bucket: "vacuum",
+      // Prefix: "uploads/",
+    })
+  );
+
+  console.log("Objects:", result.Contents);
+};
+
+listObjects();
+
 export const addImage = async (file: File, title: string) => {
   try {
-    const arrayBuffer = await file.arrayBuffer();
+    // const arrayBuffer = await file.arrayBuffer();
 
-    const params = {
-      Bucket: process.env.REACT_APP_YANDEX_BUCKET_NAME || '',
-      Key: `images/${file.name}`,
-      Body: arrayBuffer,
-      ContentType: file.type,
-      ACL: "public-read",
-    };
+    // const params = {
+    //   Bucket: process.env.REACT_APP_YANDEX_BUCKET_NAME || "",
+    //   Key: `images/${file.name}`,
+    //   Body: arrayBuffer,
+    //   ContentType: file.type,
+    //   ACL: "public-read",
+    // };
 
-    const uploadResult = await s3.upload(params).promise();
+    // const uploadResult = await s3.upload(params).promise();
+
+    const link = await uploadToYandex(file);
 
     const image: TImage = {
-      title: title,
-      link: uploadResult.Location,
+      title,
+      link,
+      // link: uploadResult.Location,
     };
 
     const docRef = doc(collection(db, "images"));
@@ -227,14 +278,16 @@ export const addImage = async (file: File, title: string) => {
 export const deleteImage = async (imageId: string, imageLink?: string) => {
   try {
     if (imageLink) {
-      const key = new URL(imageLink).pathname.slice(1);
+      const url = new URL(imageLink);
+      const key = url.pathname.split("/").slice(2).join("/");
 
-      await s3
-        .deleteObject({
-          Bucket: process.env.REACT_APP_YANDEX_BUCKET_NAME || '',
-          Key: key,
-        })
-        .promise();
+      const command = new DeleteObjectCommand({
+        Bucket: process.env.REACT_APP_YANDEX_BUCKET_NAME!,
+        Key: key,
+      });
+
+      await s3Client.send(command);
+
       const docRef = doc(db, "images", imageId);
       await deleteDoc(docRef);
     }

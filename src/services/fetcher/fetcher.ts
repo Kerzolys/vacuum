@@ -195,7 +195,6 @@ export const fetchImages = async (): Promise<TImage[]> => {
     title: doc.data().title,
     link: doc.data().link,
   }));
-  console.log(imagesList)
 
   return imagesList;
 };
@@ -212,13 +211,6 @@ export const uploadToYandex = async (file: File) => {
     ACL: ObjectCannedACL.public_read,
   };
 
-  console.log({
-    Bucket: "vacuum",
-    Key: `images/${file.name}`,
-    ContentType: file.type,
-    Body: Uint8Array,
-  });
-
   const command = new PutObjectCommand(params);
 
   try {
@@ -229,19 +221,6 @@ export const uploadToYandex = async (file: File) => {
     throw err;
   }
 };
-
-const listObjects = async () => {
-  const result = await s3Client.send(
-    new ListObjectsCommand({
-      Bucket: "vacuum",
-      // Prefix: "uploads/",
-    })
-  );
-
-  console.log("Objects:", result.Contents);
-};
-
-listObjects();
 
 export const addImage = async (file: File, title: string) => {
   try {
@@ -258,7 +237,7 @@ export const addImage = async (file: File, title: string) => {
     // const uploadResult = await s3.upload(params).promise();
 
     const link = await uploadToYandex(file);
-    console.log(link)
+    console.log(link);
 
     const image: TImage = {
       title,

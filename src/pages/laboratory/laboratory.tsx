@@ -51,8 +51,8 @@ export const Laboratory = () => {
           </nav>
         </div>
       </header>
-      <main>
-        <div className={styles.main}>
+      <div className={styles.main}>
+        <div className={styles.main__content}>
           <h2>Vacuum Quartet Lab</h2>
           <div className={styles.main__tabsBlock}>
             {tabs.map((t) => (
@@ -66,7 +66,7 @@ export const Laboratory = () => {
           {tabType === "lab" && <LaboratoryInfo />}
           {tabType === "shedule" && <LaboratoryShedule />}
         </div>
-      </main>
+      </div>
       <Footer />
     </div>
   );

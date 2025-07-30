@@ -35,7 +35,7 @@
   }
 }
 
-main {
+.main {
   display: flex;
   flex-direction: column;
   margin-block-end: 40px;
@@ -52,7 +52,7 @@ main {
   }
 }
 
-.main {
+.main__content {
   max-inline-size: 1440px;
   inline-size: 100%;
   & h2 {

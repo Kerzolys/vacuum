@@ -57,15 +57,49 @@ export const Navbar = ({
         </>
       ) : (
         <>
-          <ButtonUI buttonText="About" onClick={() => handleScroll("#about")} />
+          <ButtonUI
+            buttonText="About"
+            onClick={
+              location.pathname === "/"
+                ? () => handleScroll("#about")
+                : () => {
+                    navigate("/");
+                    handleScroll("#about");
+                  }
+            }
+          />
           <ButtonUI
             buttonText="Events"
-            onClick={() => handleScroll("#events")}
+            onClick={
+              location.pathname === "/"
+                ? () => handleScroll("#events")
+                : () => {
+                    navigate("/");
+                    handleScroll("#events");
+                  }
+            }
           />
-          <ButtonUI buttonText="Media" onClick={() => handleScroll("#media")} />
+          <ButtonUI
+            buttonText="Media"
+            onClick={
+              location.pathname === "/"
+                ? () => handleScroll("#media")
+                : () => {
+                    navigate("/");
+                    handleScroll("#media");
+                  }
+            }
+          />
           <ButtonUI
             buttonText="Gallery"
-            onClick={() => handleScroll("#gallery")}
+            onClick={
+              location.pathname === "/"
+                ? () => handleScroll("#gallery")
+                : () => {
+                    navigate("/");
+                    handleScroll("#gallery");
+                  }
+            }
           />
           <ButtonUI
             buttonText="Laboratory 2025"

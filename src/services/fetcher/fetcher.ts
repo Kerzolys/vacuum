@@ -224,25 +224,11 @@ export const uploadToYandex = async (file: File) => {
 
 export const addImage = async (file: File, title: string) => {
   try {
-    // const arrayBuffer = await file.arrayBuffer();
-
-    // const params = {
-    //   Bucket: process.env.REACT_APP_YANDEX_BUCKET_NAME || "",
-    //   Key: `images/${file.name}`,
-    //   Body: arrayBuffer,
-    //   ContentType: file.type,
-    //   ACL: "public-read",
-    // };
-
-    // const uploadResult = await s3.upload(params).promise();
-
     const link = await uploadToYandex(file);
-    console.log(link);
 
     const image: TImage = {
       title,
       link,
-      // link: uploadResult.Location,
     };
 
     const docRef = doc(collection(db, "images"));

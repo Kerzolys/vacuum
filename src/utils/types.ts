@@ -41,4 +41,18 @@ export type TUser = {
   password: string;
   accessToken: string;
   refreshToken: string;
-}
+};
+
+export type TPartner = {
+  id: number;
+  name: string;
+  description: string;
+  photo?: string;
+};
+
+export type TLector = {
+  id: number;
+  name: string;
+  description: string;
+  photo: string;
+};

@@ -1,4 +1,4 @@
-.modal{
+.modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -15,9 +15,11 @@
     background-color: #000;
     border: 1px solid #fff;
     border-radius: 10px;
-    padding: 20px;  
+    padding: 20px;
     color: #fff;
-    max-inline-size: 700px; 
+    max-inline-size: 700px;
     inline-size: 100%;
+    max-block-size: 85vh;
+    overflow: auto;
   }
 }

@@ -1,14 +1,22 @@
-import classNames from "classnames"
-import { ButtonUI } from "../ui/button-ui/button-ui"
+import classNames from "classnames";
+import { ButtonUI } from "../ui/button-ui/button-ui";
 
-import styles from "./navbar.module.scss"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import styles from "./navbar.module.scss";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-export const Navbar = ({ isHeader, isAdmin, isHorizontal }: { isHeader?: boolean, isAdmin?: boolean, isHorizontal?: boolean }) => {
+export const Navbar = ({
+  isHeader,
+  isAdmin,
+  isHorizontal,
+}: {
+  isHeader?: boolean;
+  isAdmin?: boolean;
+  isHorizontal?: boolean;
+}) => {
   const handleScroll = (sectionId: string) => {
-    const section = document.querySelector(sectionId)
-    if (section) section.scrollIntoView({ behavior: "smooth" })
-  }
+    const section = document.querySelector(sectionId);
+    if (section) section.scrollIntoView({ behavior: "smooth" });
+  };
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,13 +26,24 @@ export const Navbar = ({ isHeader, isAdmin, isHorizontal }: { isHeader?: boolean
     { path: "/admin/events", text: "Events" },
     { path: "/admin/media", text: "Media" },
     { path: "/admin/gallery", text: "Gallery" },
-    { path: "/", text: "Home" }
+    { path: "/admin/laboratory", text: "Laboratory" },
+    { path: "/", text: "Home" },
   ];
 
-  const filteredLinks = isAdmin && isHorizontal ? adminLinks.filter((link) => link.path !== location.pathname) : adminLinks
+  const filteredLinks =
+    isAdmin && isHorizontal
+      ? adminLinks.filter((link) => link.path !== location.pathname)
+      : adminLinks;
 
   return (
-    <div className={classNames({ [styles.navbar]: isHeader, [styles.navbar_footer]: !isHeader, [styles.navbar_admin]: isAdmin, [styles.navbar_admin_horizontal]: isAdmin && isHorizontal })}>
+    <div
+      className={classNames({
+        [styles.navbar]: isHeader,
+        [styles.navbar_footer]: !isHeader,
+        [styles.navbar_admin]: isAdmin,
+        [styles.navbar_admin_horizontal]: isAdmin && isHorizontal,
+      })}
+    >
       {isAdmin ? (
         <>
           {filteredLinks.map((link) => (
@@ -36,16 +55,24 @@ export const Navbar = ({ isHeader, isAdmin, isHorizontal }: { isHeader?: boolean
             <ButtonUI buttonText="Back" onClick={() => navigate(-1)} />
           )}
         </>
-        ) :
-          (
-            <>
-              <ButtonUI buttonText="About" onClick={() => handleScroll("#about")} />
-              <ButtonUI buttonText="Events" onClick={() => handleScroll("#events")} />
-              <ButtonUI buttonText="Media" onClick={() => handleScroll("#media")} />
-              <ButtonUI buttonText="Gallery" onClick={() => handleScroll("#gallery")} />
-            </>
-          )}
-
+      ) : (
+        <>
+          <ButtonUI buttonText="About" onClick={() => handleScroll("#about")} />
+          <ButtonUI
+            buttonText="Events"
+            onClick={() => handleScroll("#events")}
+          />
+          <ButtonUI buttonText="Media" onClick={() => handleScroll("#media")} />
+          <ButtonUI
+            buttonText="Gallery"
+            onClick={() => handleScroll("#gallery")}
+          />
+          <ButtonUI
+            buttonText="Laboratory 2025"
+            onClick={() => navigate("/laboratory")}
+          />
+        </>
+      )}
     </div>
-  )
-}
+  );
+};

@@ -121,7 +121,6 @@ export const LaboratoryRegistration = () => {
         console.log("response", response);
 
         const payload = new URLSearchParams({
-          api_key: process.env.REACT_APP_UNISENDER_API_KEY || "",
           message_id: "260177898",
           email: "vacuum-quartet@mail.ru, kerzolys@gmail.com",
           sender_name: "Заявка с сайта",

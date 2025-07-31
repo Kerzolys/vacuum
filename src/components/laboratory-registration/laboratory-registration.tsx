@@ -10,6 +10,7 @@ import { ButtonUIProps } from "../ui/button-ui/type";
 import { FormUI } from "../ui/form-ui/form-ui";
 import { preparingComposerData } from "../../features/hooks/preparingComposerData";
 import { ModalUI } from "../ui/modal-ui/modal-ui";
+import { preparingStringQuartetData } from "../../features/hooks/preparingStringQuartetData";
 
 export const LaboratoryRegistration = () => {
   const [formType, setFormType] = useState<
@@ -21,7 +22,7 @@ export const LaboratoryRegistration = () => {
     useState<TRegistrationComposerValues>({
       composer_name: "",
       bio: null,
-      photo_url: "",
+      photo_file: null,
       experience: "",
       audio_materials: [],
       video_materials: [],
@@ -34,7 +35,7 @@ export const LaboratoryRegistration = () => {
     useState<TRegistrationStringQuartetValues>({
       quartet_name: "",
       bio: null,
-      photo_url: "",
+      photo_file: null,
       members: {
         first_violin_name: "",
         second_violin_name: "",
@@ -53,6 +54,7 @@ export const LaboratoryRegistration = () => {
     evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = evt.target;
+
     const isArrayField =
       name === "audio_materials" || name === "video_materials";
     setComposerValues((prev) => ({
@@ -61,12 +63,27 @@ export const LaboratoryRegistration = () => {
         ? value.split(",").map((item) => item.trim())
         : value,
     }));
-    setStringQuartetValues((prev) => ({
-      ...prev,
-      [name]: isArrayField
-        ? value.split(",").map((item) => item.trim())
-        : value,
-    }));
+    if (
+      name === "first_violin_name" ||
+      name === "second_violin_name" ||
+      name === "viola_name" ||
+      name === "cello_name"
+    ) {
+      setStringQuartetValues((prev) => ({
+        ...prev,
+        members: {
+          ...prev.members,
+          [name]: value,
+        },
+      }));
+    } else {
+      setStringQuartetValues((prev) => ({
+        ...prev,
+        [name]: isArrayField
+          ? value.split(",").map((item) => item.trim())
+          : value,
+      }));
+    }
   };
 
   const handleFileChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,13 +94,17 @@ export const LaboratoryRegistration = () => {
       ...prev,
       [name]: file,
     }));
+    setStringQuartetValues((prev) => ({
+      ...prev,
+      [name]: file,
+    }));
   };
 
   const handleResetComposerValues = () => {
     setComposerValues({
       composer_name: "",
       bio: null,
-      photo_url: "",
+      photo_file: null,
       experience: "",
       audio_materials: [],
       video_materials: [],
@@ -97,7 +118,7 @@ export const LaboratoryRegistration = () => {
     setStringQuartetValues({
       quartet_name: "",
       bio: null,
-      photo_url: "",
+      photo_file: null,
       members: {
         first_violin_name: "",
         second_violin_name: "",
@@ -116,30 +137,8 @@ export const LaboratoryRegistration = () => {
     evt.preventDefault();
     try {
       if (formType === "composer") {
-        console.log("composerValues", composerValues);
-        const response = await preparingComposerData(composerValues);
-        console.log("response", response);
+        await preparingComposerData(composerValues);
 
-        const payload = new URLSearchParams({
-          message_id: "260177898",
-          email: "vacuum-quartet@mail.ru, kerzolys@gmail.com",
-          sender_name: "Заявка с сайта",
-          sender_email: "no-reply@example.com",
-          lang: "ru",
-          params: JSON.stringify(response),
-        }).toString();
-
-        const res = await fetch("/api/unisender", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            url: "https://api.unisender.com/ru/api/sendEmailMessage?format=json",
-            body: payload,
-          }),
-        });
-
-        const data = await res.text();
-        console.log("Ответ UniSender:", data);
         setApplicantName(composerValues.composer_name);
         setModalType("success");
         setIsOpen(true);
@@ -147,14 +146,21 @@ export const LaboratoryRegistration = () => {
       }
 
       if (formType === "string quartet") {
-        console.log(stringQuartetValues);
+        console.log("stringQuartetValues", stringQuartetValues);
+        await preparingStringQuartetData(stringQuartetValues);
+
+        setApplicantName(stringQuartetValues.quartet_name ?? "");
+        setModalType("success");
+        setIsOpen(true);
+        setFormType(null);
       }
     } catch (err) {
       console.log(err);
       setModalType("error");
       setIsOpen(true);
     } finally {
-      handleResetComposerValues();
+      if (formType === "composer") handleResetComposerValues();
+      if (formType === "string quartet") handleResetStringQuartetValues();
     }
   };
 
@@ -237,16 +243,17 @@ export const LaboratoryRegistration = () => {
       },
     },
     {
-      label: "Фото",
-      name: "photo_url",
+      customLabel: "Фото",
+      name: "photo_file",
       type: "text",
-      value: composerValues.photo_url,
+      value: composerValues.photo_file,
       onChange: handleChange,
       variant: "outlined",
-      error: composerValues.photo_url ? "" : "Вставьте ссылку",
+      error: composerValues.photo_file ? "" : "Загрузите фотографию",
       required: true,
       color: "primary",
-      helperText: "Вставьте ссылку",
+      helperText: "Загрузите фотографию (форматы: JPG, PNG, WEBP)",
+      inputProps: { accept: ".jpg,.jpeg,.png,.webp" },
       sx: {
         "& .MuiInputBase-input": {
           color: "#fff", // ��вет текста внутри поля
@@ -537,7 +544,7 @@ export const LaboratoryRegistration = () => {
   const stringQuartetInputs: InputUIProps[] = [
     {
       label: "Название квартета(если есть)",
-      name: "name",
+      name: "quartet_name",
       type: "text",
       value: stringQuartetValues.quartet_name,
       onChange: handleChange,
@@ -574,7 +581,7 @@ export const LaboratoryRegistration = () => {
       },
     },
     {
-      label: "Биография>",
+      customLabel: "Биография",
       name: "bio",
       type: "file",
       onChange: handleFileChange,
@@ -604,13 +611,14 @@ export const LaboratoryRegistration = () => {
       label: "Ссылка на фото",
       name: "photo_url",
       type: "text",
-      value: stringQuartetValues.photo_url,
+      value: stringQuartetValues.photo_file,
       onChange: handleChange,
       variant: "outlined",
-      error: stringQuartetValues.photo_url ? "" : "Вставьте ссылку",
+      error: stringQuartetValues.photo_file ? "" : "Загрузите фотографию",
       required: true,
       color: "primary",
-      helperText: "Вставьте ссылку",
+      helperText: "Загрузите фотографию (форматы: JPG, PNG, WEBP)",
+      inputProps: { accept: ".jpg,.jpeg,.png,.webp" },
       sx: {
         "& .MuiInputBase-input": {
           color: "#fff", // ��вет текста внутри поля
@@ -641,7 +649,7 @@ export const LaboratoryRegistration = () => {
     },
     {
       label: "ФИО - первая скрипка",
-      name: "members_first_violin",
+      name: "first_violin_name",
       type: "text",
       value: stringQuartetValues.members.first_violin_name,
       onChange: handleChange,
@@ -681,7 +689,7 @@ export const LaboratoryRegistration = () => {
     },
     {
       label: "ФИО - вторая скрипка",
-      name: "members_second_violin",
+      name: "second_violin_name",
       type: "text",
       value: stringQuartetValues.members.second_violin_name,
       onChange: handleChange,
@@ -721,7 +729,7 @@ export const LaboratoryRegistration = () => {
     },
     {
       label: "ФИО - альт",
-      name: "members_viola",
+      name: "viola_name",
       type: "text",
       value: stringQuartetValues.members.viola_name,
       onChange: handleChange,
@@ -761,7 +769,7 @@ export const LaboratoryRegistration = () => {
     },
     {
       label: "ФИО - виолончель",
-      name: "members_cello",
+      name: "cello_name",
       type: "text",
       value: stringQuartetValues.members.cello_name,
       onChange: handleChange,
@@ -924,7 +932,7 @@ export const LaboratoryRegistration = () => {
       },
     },
     {
-      label: "Мотивационное письмо>",
+      customLabel: "Мотивационное письмо",
       name: "motivation_letter",
       type: "file",
       onChange: handleFileChange,

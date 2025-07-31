@@ -10,6 +10,7 @@ import { TabUI } from "../../components/ui/tab-ui/tab-ui";
 import { useState } from "react";
 import { LaboratoryShedule } from "../../components/laboratory-shedule/laboratory-shedule";
 import { LaboratoryRegistration } from "../../components/laboratory-registration/laboratory-registration";
+
 type TabType = "lab" | "shedule" | "registration";
 const tabs: { id: number; tabName: string; type: TabType }[] = [
   {

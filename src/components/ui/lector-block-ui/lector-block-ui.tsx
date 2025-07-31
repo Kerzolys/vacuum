@@ -10,9 +10,7 @@ type Props = {
 
 export const LectorBlockUI = ({ data }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  console.log(isOpen);
   const handleCloseModal = () => {
-    console.log("fuck");
     setIsOpen(false);
   };
   const handleOpenModal = () => setIsOpen(true);

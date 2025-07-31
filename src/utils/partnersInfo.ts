@@ -1,6 +1,6 @@
 import logoVacuum from "../assets/images/coverimage-5.png";
 import logoCeam from "../assets/lab/logoCeam.png";
-import logoGnessin from "../assets/lab/logoGnessin.png";
+import logoGnessin from "../assets/lab/logoGnessin.jpg";
 import { TPartner } from "./types";
 
 export const partners: TPartner[] = [

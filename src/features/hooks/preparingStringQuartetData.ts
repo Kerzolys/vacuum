@@ -2,6 +2,8 @@ import { v4 as uuidv4 } from "uuid";
 import {
   TComposerApplication,
   TRegistrationComposerValues,
+  TRegistrationStringQuartetValues,
+  TStringQuartetApplication,
 } from "../../utils/types";
 import { ObjectCannedACL, PutObjectCommand } from "@aws-sdk/client-s3";
 import s3Client from "../../services/yandexCloud/yc";
@@ -15,7 +17,7 @@ const uploadToYandex = async (file: File) => {
 
   const params = {
     Bucket: process.env.REACT_APP_YANDEX_BUCKET_NAME!,
-    Key: `lab/composers/${id}/${file.name}`,
+    Key: `lab/string_quartets/${id}/${file.name}`,
     Body: new Uint8Array(arrayBuffer),
     ContentType: file.type,
     ChecksumAlgorithm: undefined,
@@ -26,15 +28,15 @@ const uploadToYandex = async (file: File) => {
 
   try {
     await s3Client.send(command);
-    return `https://storage.yandexcloud.net/${process.env.REACT_APP_YANDEX_BUCKET_NAME}/lab/composers/${id}/${file.name}`;
+    return `https://storage.yandexcloud.net/${process.env.REACT_APP_YANDEX_BUCKET_NAME}/lab/string_quartets/${id}/${file.name}`;
   } catch (err) {
     console.error("Error uploading file:", err);
     throw err;
   }
 };
 
-export const preparingComposerData = async (
-  values: TRegistrationComposerValues
+export const preparingStringQuartetData = async (
+  values: TRegistrationStringQuartetValues
 ) => {
   try {
     if (!values.bio || !values.motivation_letter || !values.photo_file) return;
@@ -43,12 +45,17 @@ export const preparingComposerData = async (
     const motivationLetterLink = await uploadToYandex(values.motivation_letter);
     const photoLink = await uploadToYandex(values.photo_file);
 
-    const composerApplicationData: TComposerApplication = {
+    const stringQuartetApplicationData: TStringQuartetApplication = {
       id,
-      composer_name: values.composer_name,
+      quartet_name: values.quartet_name,
       bio: bioLink,
       photo_url: photoLink,
-      experience: values.experience,
+      members: {
+        first_violin_name: values.members.first_violin_name,
+        second_violin_name: values.members.second_violin_name,
+        viola_name: values.members.viola_name,
+        cello_name: values.members.cello_name,
+      },
       audio_materials: values.audio_materials,
       video_materials: values.video_materials,
       source_of_discovery: values.source_of_discovery,
@@ -58,10 +65,10 @@ export const preparingComposerData = async (
       createdAt: serverTimestamp(),
     };
 
-    const docRef = doc(db, "labComposers", id);
-    await setDoc(docRef, composerApplicationData);
+    const docRef = doc(db, "labStringQuartets", id);
+    await setDoc(docRef, stringQuartetApplicationData);
 
-    return composerApplicationData;
+    return stringQuartetApplicationData;
   } catch (err) {
     console.error("Error uploading application:", err);
     throw err;

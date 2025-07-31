@@ -9,6 +9,7 @@ import { AdminMedia } from "../../pages/admin-media/admin-media";
 import { AdminGallery } from "../../pages/admin-gallery/admin-gallery";
 import { AdminAbout } from "../../pages/admin-about/admin-about";
 import { Laboratory } from "../../pages/laboratory/laboratory";
+import { AdminLaboratory } from "../../pages/admin-laboratory/admin-laboratory";
 
 function App() {
   const { user, loading, isAuth } = useSelector(userSelector);
@@ -27,6 +28,7 @@ function App() {
         <Route path="/admin/events" element={<AdminEvents />}></Route>
         <Route path="/admin/media" element={<AdminMedia />}></Route>
         <Route path="/admin/gallery" element={<AdminGallery />}></Route>
+        <Route path="/admin/laboratory" element={<AdminLaboratory />}></Route>
         <Route path="/laboratory" element={<Laboratory />}></Route>
       </Routes>
     </>

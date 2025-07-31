@@ -68,6 +68,8 @@ export type TComposerApplication = {
   source_of_discovery: string;
   motivation_letter: string;
   email: string;
+  createdAt?: string | FieldValue;
+  seen?: boolean;
 };
 
 export type TStringQuartetApplication = {
@@ -86,12 +88,14 @@ export type TStringQuartetApplication = {
   source_of_discovery: string;
   motivation_letter: string;
   email: string;
+  createdAt?: string | FieldValue;
+  seen?: boolean;
 };
 
 export type TRegistrationComposerValues = {
   composer_name: string;
   bio: File | null;
-  photo_url: string;
+  photo_file: File | null;
   experience: string;
   audio_materials: string[];
   video_materials: string[];
@@ -109,7 +113,7 @@ export type TRegistrationStringQuartetValues = {
     viola_name: string;
     cello_name: string;
   };
-  photo_url: string;
+  photo_file: File | null;
   audio_materials: string[];
   video_materials: string[];
   source_of_discovery: string;

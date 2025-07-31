@@ -170,6 +170,11 @@ export const LaboratoryRegistration = () => {
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
 
+  const isValidEmail = (email: string) => {
+    const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return pattern.test(email);
+  };
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsOpen(false);
@@ -482,7 +487,11 @@ export const LaboratoryRegistration = () => {
       value: composerValues.email,
       onChange: handleChange,
       variant: "outlined",
-      error: composerValues.email ? "" : "Поле должно быть заполненным",
+      error: !composerValues.email
+        ? "Поле должно быть заполненным"
+        : !isValidEmail(composerValues.email)
+          ? "Проверьте корректность электронной почты"
+          : "",
       required: true,
       color: "primary",
       sx: {
@@ -968,7 +977,11 @@ export const LaboratoryRegistration = () => {
       value: composerValues.email,
       onChange: handleChange,
       variant: "outlined",
-      error: composerValues.email ? "" : "Поле должно быть заполненным",
+      error: !stringQuartetValues.email
+        ? "Поле должно быть заполненным"
+        : !isValidEmail(stringQuartetValues.email)
+          ? "Проверьте корректность электронной почты"
+          : "",
       required: true,
       color: "primary",
       sx: {

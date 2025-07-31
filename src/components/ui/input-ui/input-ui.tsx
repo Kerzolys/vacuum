@@ -46,7 +46,7 @@ export const InputUI: React.FC<InputUIProps> = ({
           value={value}
           disabled={disabled}
           type={type}
-          error={!value}
+          error={!!error}
           helperText={error}
           data-testid="input"
           {...props}

@@ -92,38 +92,36 @@ const checkAuthState = (
   });
 };
 
-export const checkAuth = createAsyncThunk(
+export const checkAuth = createAsyncThunk<TUser | null>(
   "user/checkAuth",
-  async (_, { dispatch }) => {
-    try {
-      dispatch(setLoading(true));
-      const accessToken = getCookie("accessToken");
-      if (accessToken) {
-        const auth = getAuth();
-        const user = await checkAuthState(auth);
-        if (user) {
-          const accessToken = await user.getIdToken();
-          const refreshToken = user.refreshToken;
-          dispatch(
-            setUser({
-              email: user.email!,
-              password: "",
-              accessToken,
-              refreshToken,
-            })
-          );
-          setCookie("accessToken", accessToken);
-          localStorage.setItem("refreshToken", refreshToken);
-          dispatch(setIsAuth(true));
-        } else {
-          dispatch(setIsAuth(false));
-        }
-      }
-    } catch (error) {
-      dispatch(loginFailure(error as string));
-    } finally {
-      dispatch(setLoading(false)); // Гарантируем снятие состояния загрузки
+  async (_, thunkAPI) => {
+    const accessToken = getCookie("accessToken");
+
+    if (!accessToken) {
+      return thunkAPI.rejectWithValue("No access token");
     }
+
+    const auth = getAuth();
+    const user = await checkAuthState(auth);
+
+    if (!user) {
+      return thunkAPI.rejectWithValue("No user found");
+    }
+
+    const newAccessToken = await user.getIdToken();
+    const refreshToken = user.refreshToken;
+
+    const userData: TUser = {
+      email: user.email!,
+      password: "",
+      accessToken: newAccessToken,
+      refreshToken,
+    };
+
+    setCookie("accessToken", newAccessToken);
+    localStorage.setItem("refreshToken", refreshToken);
+
+    return userData;
   }
 );
 
@@ -133,6 +131,7 @@ export type userState = {
   success: boolean;
   loading: boolean;
   error: string | null;
+  initialized: boolean;
 };
 
 export const initialState: userState = {
@@ -141,6 +140,7 @@ export const initialState: userState = {
   success: false,
   loading: false,
   error: null,
+  initialized: false,
 };
 
 export const userSlice = createSlice({
@@ -175,6 +175,7 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+
       .addCase(signUpUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -219,13 +220,22 @@ export const userSlice = createSlice({
         state.loading = true; // Начало загрузки
         // console.log(state.loading);
       })
-      .addCase(checkAuth.fulfilled, (state) => {
-        state.loading = false; // Загрузка завершена
-        // console.log(state.loading)
-      })
-      .addCase(checkAuth.rejected, (state, action) => {
+      .addCase(checkAuth.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Initialization failed.";
+        state.initialized = true;
+        if (action.payload) {
+          state.user = action.payload;
+          state.isAuth = true;
+        } else {
+          state.user = null;
+          state.isAuth = false;
+        }
+      })
+      .addCase(checkAuth.rejected, (state) => {
+        state.loading = false;
+        state.isAuth = false;
+        state.user = null;
+        state.initialized = true;
       });
   },
 });

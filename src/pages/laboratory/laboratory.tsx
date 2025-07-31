@@ -10,8 +10,9 @@ import { TabUI } from "../../components/ui/tab-ui/tab-ui";
 import { useState } from "react";
 import { LaboratoryShedule } from "../../components/laboratory-shedule/laboratory-shedule";
 import { LaboratoryRegistration } from "../../components/laboratory-registration/laboratory-registration";
+import { LaboratorySearch } from "../../components/laboratory-search/laboratory-search";
 
-type TabType = "lab" | "shedule" | "registration";
+type TabType = "lab" | "shedule" | "registration" | "feedback";
 const tabs: { id: number; tabName: string; type: TabType }[] = [
   {
     id: 1,
@@ -28,18 +29,19 @@ const tabs: { id: number; tabName: string; type: TabType }[] = [
     tabName: "Регистрация",
     type: "registration",
   },
+  {
+    id: 4,
+    tabName: "Обратная связь",
+    type: "feedback",
+  },
 ];
 
 export const Laboratory = () => {
-  const [tabType, setTabType] = useState<"lab" | "shedule" | "registration">(
-    "lab"
-  );
+  const [tabType, setTabType] = useState<TabType>("lab");
   const navigate = useNavigate();
-  const location = useLocation();
 
   const navigateToHome = () => navigate("/");
-  const handleChangeTabType = (type: "lab" | "shedule" | "registration") =>
-    setTabType(type);
+  const handleChangeTabType = (type: TabType) => setTabType(type);
 
   return (
     <div className={styles.container}>
@@ -68,6 +70,7 @@ export const Laboratory = () => {
           {tabType === "lab" && <LaboratoryInfo />}
           {tabType === "shedule" && <LaboratoryShedule />}
           {tabType === "registration" && <LaboratoryRegistration />}
+          {tabType === "feedback" && <LaboratorySearch />}
         </div>
       </div>
       <Footer />

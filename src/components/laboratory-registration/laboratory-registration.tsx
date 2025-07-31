@@ -288,9 +288,10 @@ export const LaboratoryRegistration = () => {
       value: composerValues.audio_materials,
       onChange: handleChange,
       variant: "outlined",
-      error: composerValues.audio_materials
-        ? ""
-        : "Поле должно быть заполненным",
+      error:
+        composerValues.audio_materials.length > 0
+          ? ""
+          : "Поле должно быть заполненным",
       required: true,
       color: "primary",
       helperText: "Вставьте ссылку/ссылки через запятую",
@@ -329,9 +330,10 @@ export const LaboratoryRegistration = () => {
       value: composerValues.video_materials,
       onChange: handleChange,
       variant: "outlined",
-      error: composerValues.video_materials
-        ? ""
-        : "Поле должно быть заполненным",
+      error:
+        composerValues.video_materials.length > 0
+          ? ""
+          : "Поле должно быть заполненным",
       required: true,
       color: "primary",
       helperText: "Вставьте ссылку/ссылки через запятую",
@@ -812,9 +814,10 @@ export const LaboratoryRegistration = () => {
       value: composerValues.audio_materials,
       onChange: handleChange,
       variant: "outlined",
-      error: composerValues.audio_materials
-        ? ""
-        : "Поле должно быть заполненным",
+      error:
+        composerValues.audio_materials.length > 0
+          ? ""
+          : "Поле должно быть заполненным",
       required: true,
       color: "primary",
       helperText: "Вставьте ссылку/ссылки через запятую",
@@ -853,9 +856,10 @@ export const LaboratoryRegistration = () => {
       value: composerValues.video_materials,
       onChange: handleChange,
       variant: "outlined",
-      error: composerValues.video_materials
-        ? ""
-        : "Поле должно быть заполненным",
+      error:
+        composerValues.video_materials.length > 0
+          ? ""
+          : "Поле должно быть заполненным",
       required: true,
       color: "primary",
       helperText: "Вставьте ссылку/ссылки через запятую",

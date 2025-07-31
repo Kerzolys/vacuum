@@ -96,7 +96,7 @@ export const LaboratorySearch = () => {
       type: "text",
       onChange: handleChange,
       variant: "outlined",
-      error: "",
+      error: '',
       required: false,
       color: "primary",
       sx: {

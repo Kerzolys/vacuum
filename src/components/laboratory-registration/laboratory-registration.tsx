@@ -243,10 +243,9 @@ export const LaboratoryRegistration = () => {
       },
     },
     {
-      customLabel: "Фото",
+      customLabel: "Загрузите фотографию",
       name: "photo_file",
       type: "file",
-      value: composerValues.photo_file,
       onChange: handleFileChange,
       variant: "outlined",
       error: composerValues.photo_file ? "" : "Загрузите фотографию",
@@ -608,10 +607,9 @@ export const LaboratoryRegistration = () => {
       },
     },
     {
-      label: "Ссылка на фото",
+      customLabel: "Загрузите фотографию",
       name: "photo_file",
       type: "file",
-      value: stringQuartetValues.photo_file,
       onChange: handleFileChange,
       variant: "outlined",
       error: stringQuartetValues.photo_file ? "" : "Загрузите фотографию",

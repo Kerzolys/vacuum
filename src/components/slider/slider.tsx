@@ -21,7 +21,6 @@ export const Slider: React.FC<SliderProps> = ({
 
   const handleTouchStart = (evt: React.TouchEvent<HTMLDivElement>) => {
     setTouchStartX(evt.touches[0].clientX);
-    console.log("touch start", evt.touches[0].clientX);
   };
   const handleTouchMove = (evt: React.TouchEvent<HTMLDivElement>) => {
     setTouchEndX(evt.touches[0].clientX);

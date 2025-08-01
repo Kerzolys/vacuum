@@ -1,11 +1,11 @@
 import { TLector } from "./types";
-import glebImg from "../assets/lab/gleb.webp";
+import glebImg from "../assets/lab/gleb.jpg";
 import yuliaImg from "../assets/lab/yulia.webp";
-import sashaImg from "../assets/lab/sasha.webp";
+import sashaImg from "../assets/lab/sasha.jpg";
 import kolyaImg from "../assets/lab/kolya.jpg";
 import tanyaImg from "../assets/lab/tanya.jpg";
 import irinaImg from "../assets/lab/irina.jpg";
-import iliaImg from "../assets/lab/ilia.webp";
+import iliaImg from "../assets/lab/ilya.webp";
 
 export const lectors: TLector[] = [
   {

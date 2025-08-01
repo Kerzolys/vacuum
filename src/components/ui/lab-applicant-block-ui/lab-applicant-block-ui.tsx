@@ -71,13 +71,9 @@ export const LabApplicantBlockUI = ({ data }: Props) => {
                   <p>Виолончель: {data.members.cello_name}</p>
                 </>
               )}
-              <h3>Аудио материалы</h3>
-              {data.audio_materials.map((a) => (
-                <p>{a}</p>
-              ))}
-              <h3>Видео материалы</h3>
-              {data.video_materials.map((v) => (
-                <p>{v}</p>
+              <h3>Аудио/видео материалы</h3>
+              {data.media_materials.map((a,i) => (
+                <p key={a[i]}>{a}</p>
               ))}
               <h3>Откуда узнали о лаборатории</h3>
               <p>{data.source_of_discovery}</p>

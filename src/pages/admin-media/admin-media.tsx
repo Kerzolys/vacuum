@@ -92,7 +92,6 @@ export const AdminMedia = () => {
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault()
-    console.log('submitted')
   }
 
   const handleClose = () => setIsOpen(false)

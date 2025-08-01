@@ -1,18 +1,17 @@
 import { Footer } from "../../components/footer/footer";
 import { LaboratoryInfo } from "../../components/laboratory-info/laboratory-info";
-import { Layout } from "../../components/layout/layout";
 import logo from "../../assets/images/coverimage-5.png";
-
-import styles from "./laboratory.module.scss";
 import { ButtonUI } from "../../components/ui/button-ui/button-ui";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { TabUI } from "../../components/ui/tab-ui/tab-ui";
 import { useState } from "react";
-import { LaboratoryShedule } from "../../components/laboratory-shedule/laboratory-shedule";
+import { LaboratoryTermsAndConditions } from "../../components/laboratory-terms-and-conditions/laboratory-terms-and-conditions";
 import { LaboratoryRegistration } from "../../components/laboratory-registration/laboratory-registration";
 import { LaboratorySearch } from "../../components/laboratory-search/laboratory-search";
 
-type TabType = "lab" | "shedule" | "registration" | "feedback";
+import styles from "./laboratory.module.scss";
+
+type TabType = "lab" | "terms and conditions" | "registration" | "feedback";
 const tabs: { id: number; tabName: string; type: TabType }[] = [
   {
     id: 1,
@@ -21,19 +20,19 @@ const tabs: { id: number; tabName: string; type: TabType }[] = [
   },
   {
     id: 2,
-    tabName: "Расписание",
-    type: "shedule",
+    tabName: "Условия участия",
+    type: "terms and conditions",
   },
   {
     id: 3,
     tabName: "Регистрация",
     type: "registration",
   },
-  {
-    id: 4,
-    tabName: "Обратная связь",
-    type: "feedback",
-  },
+  // {
+  //   id: 4,
+  //   tabName: "Обратная связь",
+  //   type: "feedback",
+  // },
 ];
 
 export const Laboratory = () => {
@@ -68,9 +67,11 @@ export const Laboratory = () => {
             ))}
           </div>
           {tabType === "lab" && <LaboratoryInfo />}
-          {tabType === "shedule" && <LaboratoryShedule />}
+          {tabType === "terms and conditions" && (
+            <LaboratoryTermsAndConditions />
+          )}
           {tabType === "registration" && <LaboratoryRegistration />}
-          {tabType === "feedback" && <LaboratorySearch />}
+          {/* {tabType === "feedback" && <LaboratorySearch />} */}
         </div>
       </div>
       <Footer />

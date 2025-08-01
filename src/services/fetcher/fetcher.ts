@@ -140,7 +140,6 @@ export const archiveEvent = async (eventId: string) => {
   try {
     const docRef = doc(db, "events", eventId);
     await updateDoc(docRef, { archived: true });
-    console.log(docRef);
   } catch (err) {
     console.error(`Error archiving event: ${err}`);
     throw err;
@@ -287,8 +286,7 @@ export const fetchComposerApplications = async (): Promise<
       bio: data.bio,
       experience: data.experience,
       photo_url: data.photo_url,
-      audio_materials: data.audio_materials,
-      video_materials: data.video_materials,
+      media_materials: data.media_materials,
       source_of_discovery: data.source_of_discovery,
       motivation_letter: data.motivation_letter,
       email: data.email,
@@ -319,8 +317,7 @@ export const fetchStringQuartetApplications = async (): Promise<
         cello_name: data.members.cello_name,
       },
       photo_url: data.photo_url,
-      audio_materials: data.audio_materials,
-      video_materials: data.video_materials,
+      media_materials: data.media_materials,
       source_of_discovery: data.source_of_discovery,
       motivation_letter: data.motivation_letter,
       email: data.email,

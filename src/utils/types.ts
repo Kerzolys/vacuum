@@ -63,8 +63,7 @@ export type TComposerApplication = {
   bio: String;
   photo_url: string;
   experience: string;
-  audio_materials: string[];
-  video_materials: string[];
+  media_materials: string[];
   source_of_discovery: string;
   motivation_letter: string;
   email: string;
@@ -83,8 +82,7 @@ export type TStringQuartetApplication = {
     cello_name: string;
   };
   photo_url: string;
-  audio_materials: string[];
-  video_materials: string[];
+  media_materials: string[];
   source_of_discovery: string;
   motivation_letter: string;
   email: string;
@@ -97,8 +95,7 @@ export type TRegistrationComposerValues = {
   bio: File | null;
   photo_file: File | null;
   experience: string;
-  audio_materials: string[];
-  video_materials: string[];
+  media_materials: string[];
   source_of_discovery: string;
   motivation_letter: File | null;
   email: string;
@@ -114,8 +111,7 @@ export type TRegistrationStringQuartetValues = {
     cello_name: string;
   };
   photo_file: File | null;
-  audio_materials: string[];
-  video_materials: string[];
+  media_materials: string[];
   source_of_discovery: string;
   motivation_letter: File | null;
   email: string;

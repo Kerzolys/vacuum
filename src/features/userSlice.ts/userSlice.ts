@@ -218,7 +218,6 @@ export const userSlice = createSlice({
       })
       .addCase(checkAuth.pending, (state) => {
         state.loading = true; // Начало загрузки
-        // console.log(state.loading);
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.loading = false;

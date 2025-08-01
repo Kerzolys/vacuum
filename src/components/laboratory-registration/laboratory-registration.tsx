@@ -11,6 +11,7 @@ import { FormUI } from "../ui/form-ui/form-ui";
 import { preparingComposerData } from "../../features/hooks/preparingComposerData";
 import { ModalUI } from "../ui/modal-ui/modal-ui";
 import { preparingStringQuartetData } from "../../features/hooks/preparingStringQuartetData";
+import { PreloaderUI } from "../ui/preloader-ui/preloader-ui";
 
 export const LaboratoryRegistration = () => {
   const [formType, setFormType] = useState<
@@ -24,8 +25,7 @@ export const LaboratoryRegistration = () => {
       bio: null,
       photo_file: null,
       experience: "",
-      audio_materials: [],
-      video_materials: [],
+      media_materials: [],
       source_of_discovery: "",
       motivation_letter: null,
       email: "",
@@ -42,47 +42,51 @@ export const LaboratoryRegistration = () => {
         viola_name: "",
         cello_name: "",
       },
-      audio_materials: [],
-      video_materials: [],
+      media_materials: [],
       source_of_discovery: "",
       motivation_letter: null,
       email: "",
     });
   const [applicantName, setApplicantName] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleChange = (
     evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = evt.target;
 
-    const isArrayField =
-      name === "audio_materials" || name === "video_materials";
-    setComposerValues((prev) => ({
-      ...prev,
-      [name]: isArrayField
-        ? value.split(",").map((item) => item.trim())
-        : value,
-    }));
-    if (
-      name === "first_violin_name" ||
-      name === "second_violin_name" ||
-      name === "viola_name" ||
-      name === "cello_name"
-    ) {
-      setStringQuartetValues((prev) => ({
-        ...prev,
-        members: {
-          ...prev.members,
-          [name]: value,
-        },
-      }));
-    } else {
-      setStringQuartetValues((prev) => ({
+    const isArrayField = name === "media_materials";
+
+    if (formType === "composer") {
+      setComposerValues((prev) => ({
         ...prev,
         [name]: isArrayField
           ? value.split(",").map((item) => item.trim())
           : value,
       }));
+    }
+    if (formType === "string quartet") {
+      if (
+        name === "first_violin_name" ||
+        name === "second_violin_name" ||
+        name === "viola_name" ||
+        name === "cello_name"
+      ) {
+        setStringQuartetValues((prev) => ({
+          ...prev,
+          members: {
+            ...prev.members,
+            [name]: value,
+          },
+        }));
+      } else {
+        setStringQuartetValues((prev) => ({
+          ...prev,
+          [name]: isArrayField
+            ? value.split(",").map((item) => item.trim())
+            : value,
+        }));
+      }
     }
   };
 
@@ -90,14 +94,18 @@ export const LaboratoryRegistration = () => {
     const { name, files } = evt.target;
     const file = files?.[0] ?? null;
 
-    setComposerValues((prev) => ({
-      ...prev,
-      [name]: file,
-    }));
-    setStringQuartetValues((prev) => ({
-      ...prev,
-      [name]: file,
-    }));
+    if (formType === "composer") {
+      setComposerValues((prev) => ({
+        ...prev,
+        [name]: file,
+      }));
+    }
+    if (formType === "string quartet") {
+      setStringQuartetValues((prev) => ({
+        ...prev,
+        [name]: file,
+      }));
+    }
   };
 
   const handleResetComposerValues = () => {
@@ -106,8 +114,7 @@ export const LaboratoryRegistration = () => {
       bio: null,
       photo_file: null,
       experience: "",
-      audio_materials: [],
-      video_materials: [],
+      media_materials: [],
       source_of_discovery: "",
       motivation_letter: null,
       email: "",
@@ -125,8 +132,7 @@ export const LaboratoryRegistration = () => {
         viola_name: "",
         cello_name: "",
       },
-      audio_materials: [],
-      video_materials: [],
+      media_materials: [],
       source_of_discovery: "",
       motivation_letter: null,
       email: "",
@@ -137,8 +143,8 @@ export const LaboratoryRegistration = () => {
     evt.preventDefault();
     try {
       if (formType === "composer") {
+        setIsLoading(true);
         await preparingComposerData(composerValues);
-
         setApplicantName(composerValues.composer_name);
         setModalType("success");
         setIsOpen(true);
@@ -146,28 +152,34 @@ export const LaboratoryRegistration = () => {
       }
 
       if (formType === "string quartet") {
-        console.log("stringQuartetValues", stringQuartetValues);
+        setIsLoading(true);
         await preparingStringQuartetData(stringQuartetValues);
-
         setApplicantName(stringQuartetValues.quartet_name ?? "");
         setModalType("success");
         setIsOpen(true);
         setFormType(null);
       }
+  
     } catch (err) {
-      console.log(err);
       setModalType("error");
       setIsOpen(true);
     } finally {
+      setIsLoading(false);
       if (formType === "composer") handleResetComposerValues();
       if (formType === "string quartet") handleResetStringQuartetValues();
     }
   };
 
-  const handleRegistrationComposer = () => setFormType("composer");
-  const handleRegistrationStringQuartet = () => setFormType("string quartet");
+  const handleRegistrationComposer = () => {
+    setFormType("composer");
+    handleResetStringQuartetValues();
+  };
 
-  const handleOpen = () => setIsOpen(true);
+  const handleRegistrationStringQuartet = () => {
+    setFormType("string quartet");
+    handleResetComposerValues();
+  };
+
   const handleClose = () => setIsOpen(false);
 
   const isValidEmail = (email: string) => {
@@ -287,56 +299,14 @@ export const LaboratoryRegistration = () => {
       },
     },
     {
-      label: "Ссылка/ссылки на аудио",
-      name: "audio_materials",
+      label: "Ссылки на аудио/видео материалы",
+      name: "media_materials",
       type: "text",
-      value: composerValues.audio_materials,
+      value: composerValues.media_materials,
       onChange: handleChange,
       variant: "outlined",
       error:
-        composerValues.audio_materials.length > 0
-          ? ""
-          : "Поле должно быть заполненным",
-      required: true,
-      color: "primary",
-      helperText: "Вставьте ссылку/ссылки через запятую",
-      sx: {
-        "& .MuiInputBase-input": {
-          color: "#fff", // ��вет текста внутри поля
-        },
-        "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: "#fff", // ��вет обводки внутри поля
-        },
-        "& .MuiInputLabel-root": {
-          color: "#fff", // Цвет лейбла
-        },
-        "& .MuiInputBase-root": {
-          backgroundColor: "#000", // цвет фона input'а или textarea
-        },
-        "& input:-webkit-autofill": {
-          WebkitBoxShadow: "0 0 0 1000px #000 inset !important", // Заменить #000 на нужный background
-          WebkitTextFillColor: "#fff !important", // Цвет текста при автозаполнении
-        },
-        // Можно еще, если нужно:
-        "& input:-webkit-autofill:hover": {
-          WebkitBoxShadow: "0 0 0 1000px #000 inset !important",
-          WebkitTextFillColor: "#fff !important",
-        },
-        "& input:-webkit-autofill:focus": {
-          WebkitBoxShadow: "0 0 0 1000px #000 inset !important",
-          WebkitTextFillColor: "#fff !important",
-        },
-      },
-    },
-    {
-      label: "Ссылка/ссылки на видео",
-      name: "video_materials",
-      type: "text",
-      value: composerValues.video_materials,
-      onChange: handleChange,
-      variant: "outlined",
-      error:
-        composerValues.video_materials.length > 0
+        composerValues.media_materials.length > 0
           ? ""
           : "Поле должно быть заполненным",
       required: true,
@@ -783,7 +753,7 @@ export const LaboratoryRegistration = () => {
       value: stringQuartetValues.members.cello_name,
       onChange: handleChange,
       variant: "outlined",
-      error: stringQuartetValues.members.viola_name
+      error: stringQuartetValues.members.cello_name
         ? ""
         : "Поле должно быть заполненным",
       required: true,
@@ -817,56 +787,14 @@ export const LaboratoryRegistration = () => {
       },
     },
     {
-      label: "Ссылка/ссылки на аудио",
-      name: "audio_materials",
+      label: "Ссылки на аудио/видео материалы",
+      name: "media_materials",
       type: "text",
-      value: composerValues.audio_materials,
+      value: stringQuartetValues.media_materials,
       onChange: handleChange,
       variant: "outlined",
       error:
-        composerValues.audio_materials.length > 0
-          ? ""
-          : "Поле должно быть заполненным",
-      required: true,
-      color: "primary",
-      helperText: "Вставьте ссылку/ссылки через запятую",
-      sx: {
-        "& .MuiInputBase-input": {
-          color: "#fff", // ��вет текста внутри поля
-        },
-        "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: "#fff", // ��вет обводки внутри поля
-        },
-        "& .MuiInputLabel-root": {
-          color: "#fff", // Цвет лейбла
-        },
-        "& .MuiInputBase-root": {
-          backgroundColor: "#000", // цвет фона input'а или textarea
-        },
-        "& input:-webkit-autofill": {
-          WebkitBoxShadow: "0 0 0 1000px #000 inset !important", // Заменить #000 на нужный background
-          WebkitTextFillColor: "#fff !important", // Цвет текста при автозаполнении
-        },
-        // Можно еще, если нужно:
-        "& input:-webkit-autofill:hover": {
-          WebkitBoxShadow: "0 0 0 1000px #000 inset !important",
-          WebkitTextFillColor: "#fff !important",
-        },
-        "& input:-webkit-autofill:focus": {
-          WebkitBoxShadow: "0 0 0 1000px #000 inset !important",
-          WebkitTextFillColor: "#fff !important",
-        },
-      },
-    },
-    {
-      label: "Ссылка/ссылки на видео",
-      name: "video_materials",
-      type: "text",
-      value: composerValues.video_materials,
-      onChange: handleChange,
-      variant: "outlined",
-      error:
-        composerValues.video_materials.length > 0
+        stringQuartetValues.media_materials.length > 0
           ? ""
           : "Поле должно быть заполненным",
       required: true,
@@ -974,7 +902,7 @@ export const LaboratoryRegistration = () => {
       label: "Адрес электронной почты для обратной связи",
       name: "email",
       type: "text",
-      value: composerValues.email,
+      value: stringQuartetValues.email,
       onChange: handleChange,
       variant: "outlined",
       error: !stringQuartetValues.email
@@ -1057,24 +985,51 @@ export const LaboratoryRegistration = () => {
         </div>
       )}
       {formType === "composer" && (
-        <FormUI
-          inputs={composerInputs}
-          buttons={composerButtons}
-          formName="composer_registration"
-          formHeader="Регистрация для композиторов"
-          onSubmit={handleSubmit}
-          onChange={handleChange}
-        />
+        <>
+          {isLoading ? (
+            <PreloaderUI />
+          ) : (
+            <>
+              <ButtonUI
+                buttonText="Назад"
+                onClick={() => setFormType(null)}
+                className={styles.backButton}
+              />
+              <FormUI
+                inputs={composerInputs}
+                buttons={composerButtons}
+                formName="composer_registration"
+                formHeader="Регистрация для композиторов"
+                onSubmit={handleSubmit}
+                onChange={handleChange}
+              />
+            </>
+          )}
+        </>
       )}
       {formType === "string quartet" && (
-        <FormUI
-          inputs={stringQuartetInputs}
-          buttons={stringQuartetButtons}
-          formName="string_quartet_registration"
-          formHeader="Регистрация для струнных квартетов"
-          onSubmit={handleSubmit}
-          onChange={handleChange}
-        />
+        <>
+          {isLoading ? (
+            <PreloaderUI />
+          ) : (
+            <>
+              <ButtonUI
+                buttonText="Назад"
+                onClick={() => setFormType(null)}
+                className={styles.backButton}
+              />
+              <FormUI
+                inputs={stringQuartetInputs}
+                buttons={stringQuartetButtons}
+                formName="string_quartet_registration"
+                formHeader="Регистрация для струнных квартетов"
+                onSubmit={handleSubmit}
+                onChange={handleChange}
+              />
+              {isLoading && <PreloaderUI />}
+            </>
+          )}
+        </>
       )}
       {isOpen && modalType === "success" && (
         <ModalUI onClose={handleClose}>

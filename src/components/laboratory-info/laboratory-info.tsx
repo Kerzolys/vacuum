@@ -12,12 +12,16 @@ export const LaboratoryInfo = () => {
   return (
     <div className={styles.container}>
       <div className={styles.container__content}>
-        <SectionLineUI />
         <h3>
+          Открыт приём заявок на участие в лаборатории для композиторов и
+          струнных квартетов — Vacuum Quartet Lab.
+        </h3>
+        <SectionLineUI />
+        <p>
           Совместный проект струнного квартета Vacuum, Центра
           электроакустической музыки (ЦЭАМ) и фестиваля Gnesin Contemporary
           Music Week
-        </h3>
+        </p>
         <div className={styles.container__info}>
           <div>
             <p>

@@ -159,7 +159,6 @@ export const LaboratoryRegistration = () => {
         setIsOpen(true);
         setFormType(null);
       }
-  
     } catch (err) {
       setModalType("error");
       setIsOpen(true);
@@ -1038,10 +1037,7 @@ export const LaboratoryRegistration = () => {
               ? `${applicantName}, ваша заявка отправлена!`
               : "Ваша заявка отправлена!"}
           </h2>
-          <p>
-            Результаты будут опубликованы на сайте и в телеграм каналах 27-ого
-            августа
-          </p>
+          <p>Результаты будут опубликованы на сайте до 10-ого сентября.</p>
         </ModalUI>
       )}
       {isOpen && modalType === "error" && (
@@ -1049,6 +1045,10 @@ export const LaboratoryRegistration = () => {
           <h2>Упс, что-то пошло не так... попробуйте позже!</h2>
         </ModalUI>
       )}
+      <p>
+        По всем вопросам, возникшим при регистрации пишите:{" "}
+        <a href="mailto: kerzolys@gmail.com">kerzolys@gmail.com</a>
+      </p>
     </div>
   );
 };

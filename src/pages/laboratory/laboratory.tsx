@@ -7,11 +7,10 @@ import { TabUI } from "../../components/ui/tab-ui/tab-ui";
 import { useState } from "react";
 import { LaboratoryTermsAndConditions } from "../../components/laboratory-terms-and-conditions/laboratory-terms-and-conditions";
 import { LaboratoryRegistration } from "../../components/laboratory-registration/laboratory-registration";
-import { LaboratorySearch } from "../../components/laboratory-search/laboratory-search";
 
 import styles from "./laboratory.module.scss";
 
-type TabType = "lab" | "terms and conditions" | "registration" | "feedback";
+type TabType = "lab" | "terms and conditions" | "registration" ;
 const tabs: { id: number; tabName: string; type: TabType }[] = [
   {
     id: 1,
@@ -28,11 +27,6 @@ const tabs: { id: number; tabName: string; type: TabType }[] = [
     tabName: "Регистрация",
     type: "registration",
   },
-  // {
-  //   id: 4,
-  //   tabName: "Обратная связь",
-  //   type: "feedback",
-  // },
 ];
 
 export const Laboratory = () => {
@@ -71,7 +65,6 @@ export const Laboratory = () => {
             <LaboratoryTermsAndConditions />
           )}
           {tabType === "registration" && <LaboratoryRegistration />}
-          {/* {tabType === "feedback" && <LaboratorySearch />} */}
         </div>
       </div>
       <Footer />

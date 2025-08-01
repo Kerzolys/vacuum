@@ -9,7 +9,7 @@ export const ModalUI: React.FC<ModalUIProps> = ({ onClose, children }) => {
     <div className={styles.modal} onClick={onClose}>
       <div
         className={styles.modal__content}
-        onClick={(e) => e.stopPropagation()} // Останавливаем событие, чтобы клик внутри модалки не закрывал её
+        onClick={(e) => e.stopPropagation()}
       >
         {children}
       </div>

@@ -1,4 +1,19 @@
+.container {
+  inline-size: 100%;
+  max-inline-size: 500px;
+}
+
 .input {
   inline-size: 100%;
   max-inline-size: 500px;
+}
+
+.customLabel {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 23px;
+  &_error {
+    color: #d32f2f;
+  }
 }

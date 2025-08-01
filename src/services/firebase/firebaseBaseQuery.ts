@@ -18,10 +18,8 @@ export const firebaseBaseQuery = async ({
   method: string;
   body?: any;
 }) => {
-  console.log("BaseQuery Called:", { url, method, body });
   try {
     const ref = collection(db, url);
-    console.log("HTTP Method:", method);
     switch (method) {
       case "GET":
         const snapshot = await getDocs(query(ref));
@@ -30,12 +28,10 @@ export const firebaseBaseQuery = async ({
           id: doc.id,
           ...doc.data(),
         }));
-        console.log(data);
         return { data };
       case "POST":
         const newDocRef = await addDoc(ref, body);
         const id = newDocRef.id;
-        console.log(id)
         return { data: {  ...body, id } };
         
       case "PUT":
@@ -43,10 +39,6 @@ export const firebaseBaseQuery = async ({
         await updateDoc(docRef, body);
         return { data: body };
       case "DELETE":
-        // console.log(url)
-        // const docToDelete = doc(db, url); // Указываем точный путь к документу
-        // await deleteDoc(docToDelete);
-        // return { data: { id: body.id } };
         const [collectionName, docId] = url.split("/"); // Разделяем коллекцию и ID
         if (!collectionName || !docId) {
           throw new Error("Invalid document path");
@@ -54,7 +46,6 @@ export const firebaseBaseQuery = async ({
         
         debugger
         const deletedDocRef = doc(db, collectionName, docId); // Передаём коллекцию и ID
-        console.log(deletedDocRef);
         await deleteDoc(deletedDocRef);
         return { data: { id: docId } };
       default:

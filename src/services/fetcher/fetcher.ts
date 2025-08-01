@@ -9,7 +9,14 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { TBio, TEvent, TImage, TVideo } from "../../utils/types";
+import {
+  TBio,
+  TComposerApplication,
+  TEvent,
+  TImage,
+  TStringQuartetApplication,
+  TVideo,
+} from "../../utils/types";
 import { db } from "../firebase/firebase";
 
 import s3 from "../yandexCloud/yc";
@@ -133,7 +140,6 @@ export const archiveEvent = async (eventId: string) => {
   try {
     const docRef = doc(db, "events", eventId);
     await updateDoc(docRef, { archived: true });
-    console.log(docRef);
   } catch (err) {
     console.error(`Error archiving event: ${err}`);
     throw err;
@@ -224,25 +230,11 @@ export const uploadToYandex = async (file: File) => {
 
 export const addImage = async (file: File, title: string) => {
   try {
-    // const arrayBuffer = await file.arrayBuffer();
-
-    // const params = {
-    //   Bucket: process.env.REACT_APP_YANDEX_BUCKET_NAME || "",
-    //   Key: `images/${file.name}`,
-    //   Body: arrayBuffer,
-    //   ContentType: file.type,
-    //   ACL: "public-read",
-    // };
-
-    // const uploadResult = await s3.upload(params).promise();
-
     const link = await uploadToYandex(file);
-    console.log(link);
 
     const image: TImage = {
       title,
       link,
-      // link: uploadResult.Location,
     };
 
     const docRef = doc(collection(db, "images"));
@@ -278,4 +270,61 @@ export const deleteImage = async (imageId: string, imageLink?: string) => {
     console.error("Error deleting image:", err);
     throw err;
   }
+};
+
+export const fetchComposerApplications = async (): Promise<
+  TComposerApplication[]
+> => {
+  const applicationsCollection = collection(db, "labComposers");
+  const applicationsSnapshot = await getDocs(applicationsCollection);
+  const applicationsList = applicationsSnapshot.docs.map((doc) => {
+    const data = doc.data();
+
+    return {
+      id: doc.id,
+      composer_name: data.composer_name,
+      bio: data.bio,
+      experience: data.experience,
+      photo_url: data.photo_url,
+      media_materials: data.media_materials,
+      source_of_discovery: data.source_of_discovery,
+      motivation_letter: data.motivation_letter,
+      email: data.email,
+      createdAt: data.createdAt,
+      seen: data.seen,
+    };
+  });
+
+  return applicationsList;
+};
+
+export const fetchStringQuartetApplications = async (): Promise<
+  TStringQuartetApplication[]
+> => {
+  const applicationsCollection = collection(db, "labStringQuartets");
+  const applicationsSnapshot = await getDocs(applicationsCollection);
+  const applicationsList = applicationsSnapshot.docs.map((doc) => {
+    const data = doc.data();
+
+    return {
+      id: doc.id,
+      quartet_name: data.quartet_name,
+      bio: data.bio,
+      members: {
+        first_violin_name: data.members.first_violin_name,
+        second_violin_name: data.members.second_violin_name,
+        viola_name: data.members.viola_name,
+        cello_name: data.members.cello_name,
+      },
+      photo_url: data.photo_url,
+      media_materials: data.media_materials,
+      source_of_discovery: data.source_of_discovery,
+      motivation_letter: data.motivation_letter,
+      email: data.email,
+      createdAt: data.createdAt,
+      seen: data.seen,
+    };
+  });
+
+  return applicationsList;
 };

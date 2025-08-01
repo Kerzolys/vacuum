@@ -18,7 +18,6 @@ export const Auth = ({ action }: { action: typeof signUpUser | typeof loginUser 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     dispatch(action({ email: value.email, password: value.password }))
-    console.log('Form submitted', action)
   }
 
   const inputs: InputUIProps[] = [

@@ -6,30 +6,34 @@
   overflow: hidden; // Убедиться, что контент не выходит за пределы контейнера
   min-inline-size: 320px;
   min-block-size: 100vh;
+  background: url("../../assets/lab/coverLabImage.webp");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
   @media screen and (max-width: 768px) {
     padding-inline: 20px;
     padding-block-start: 120px;
   }
-  &__video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1; // Находится позади других элементов
-    display: block;
-    width: 100vw; // Занимает всю ширину экрана
-    height: 100vh; // Высота равна высоте экрана
-    margin: 0;
-    border: 0;
-    padding: 0;
-    object-fit: cover; // Масштабирует видео, чтобы оно заполнило весь контейнер
-    outline: 0;
-    opacity: 0.3; // Прозрачность видео
-    min-inline-size: 1440px;
-    animation: fadeVideoIn 7s forwards;
-    @media screen and (max-width: 768px) {
-      left: -50%;
-    }
-  }
+  // &__video {
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  //   z-index: -1; // Находится позади других элементов
+  //   display: block;
+  //   width: 100vw; // Занимает всю ширину экрана
+  //   height: 100vh; // Высота равна высоте экрана
+  //   margin: 0;
+  //   border: 0;
+  //   padding: 0;
+  //   object-fit: cover; // Масштабирует видео, чтобы оно заполнило весь контейнер
+  //   outline: 0;
+  //   opacity: 0.3; // Прозрачность видео
+  //   min-inline-size: 1440px;
+  //   animation: fadeVideoIn 7s forwards;
+  //   @media screen and (max-width: 768px) {
+  //     left: -50%;
+  //   }
+  // }
   &__image {
     object-fit: cover;
     animation: fadeLogoIn 3s forwards;
@@ -40,6 +44,27 @@
       inline-size: 50%;
       block-size: 50%;
     }
+  }
+  & h1 {
+    font-size: 40px;
+    font-weight: 800;
+    color: #fff;
+    animation: fadeInfoUp 3s forwards ease;
+    animation-delay: 0.5s;
+    opacity: 0;
+  }
+  & p {
+    font-size: 25px;
+    font-weight: 600;
+    color: #fff;
+    animation: fadeInfoUp 3s forwards ease;
+    animation-delay: 1s;
+    opacity: 0;
+  }
+  & button {
+    animation: fadeInfoUp 3s forwards ease;
+    animation-delay: 1.5s;
+    opacity: 0;
   }
 }
 
@@ -54,11 +79,22 @@
   }
 }
 
-@keyframes fadeVideoIn {
-  from { 
+// @keyframes fadeVideoIn {
+//   from {
+//     opacity: 0;
+//   }
+//   to {
+//     opacity: 0.2;
+//   }
+// }
+
+@keyframes fadeInfoUp {
+  from {
     opacity: 0;
+    transform: translateY(100px);
   }
   to {
-    opacity: .2;
+    opacity: 1;
+    transform: translateY(0);
   }
 }

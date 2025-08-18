@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TBio, TImage } from "../../utils/types";
+import { TBio } from "../../utils/types";
 import {
   addBio,
   deleteBio,

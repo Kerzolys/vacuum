@@ -5,7 +5,7 @@ import { SectionLineUI } from "../ui/section-line-ui/section-line-ui";
 import styles from "./about.module.scss";
 import { PreloaderUI } from "../ui/preloader-ui/preloader-ui";
 
-export const About = ({}) => {
+export const About = () => {
   const { data, error, isLoading } = useSWR("bio", fetchBio);
   const bio = data || [];
   if (isLoading) return <PreloaderUI />;

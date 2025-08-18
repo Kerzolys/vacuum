@@ -1,5 +1,4 @@
 import useSWR from "swr";
-import { testImages } from "../../utils/testImages";
 import { Slider } from "../slider/slider";
 
 import styles from "./gallery.module.scss";

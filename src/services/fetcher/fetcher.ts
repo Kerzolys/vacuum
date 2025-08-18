@@ -19,10 +19,8 @@ import {
 } from "../../utils/types";
 import { db } from "../firebase/firebase";
 
-import s3 from "../yandexCloud/yc";
 import {
   DeleteObjectCommand,
-  ListObjectsCommand,
   ObjectCannedACL,
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
@@ -43,7 +41,7 @@ export const fetchBio = async (): Promise<TBio[]> => {
 export const addBio = async (bio: TBio) => {
   try {
     const docRef = doc(collection(db, "bio"));
-    const newBio = await setDoc(docRef, bio);
+    await setDoc(docRef, bio);
     return { id: docRef.id, ...bio };
   } catch (err) {
     console.error(`Error adding bio: ${err}`);
@@ -161,7 +159,7 @@ export const fetchVideos = async (): Promise<TVideo[]> => {
 export const addVideo = async (video: { title: string; link: string }) => {
   try {
     const docRef = doc(collection(db, "videos"));
-    const newVideo = await setDoc(docRef, video);
+    await setDoc(docRef, video);
     return { id: docRef.id, ...video };
   } catch (err) {
     console.error(`Error adding video: ${err}`);

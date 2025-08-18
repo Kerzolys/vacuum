@@ -9,7 +9,7 @@ import {
 } from "../../services/fetcher/fetcher";
 import { PreloaderUI } from "../../components/ui/preloader-ui/preloader-ui";
 import { ButtonUI } from "../../components/ui/button-ui/button-ui";
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material";
 import { FormUI } from "../../components/ui/form-ui/form-ui";
 import { ModalUI } from "../../components/ui/modal-ui/modal-ui";
 import { InputUIProps } from "../../components/ui/input-ui/type";
@@ -45,7 +45,7 @@ export const AdminGallery = () => {
       return;
     }
     try {
-      const downloadURL = await addImage(file, values.title);
+      await addImage(file, values.title);
       await mutate("images");
       alert("Файл успешно загружен");
       setIsOpen(false);

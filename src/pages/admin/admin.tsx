@@ -2,12 +2,12 @@
 import { Auth } from "../../components/auth/auth";
 import { Navbar } from "../../components/navbar/navbar";
 import { PreloaderUI } from "../../components/ui/preloader-ui/preloader-ui";
-import { loginUser, signUpUser, userSelector } from "../../features/userSlice.ts/userSlice";
+import { loginUser, userSelector } from "../../features/userSlice.ts/userSlice";
 import { useSelector } from "../../services/store/store";
 
 import styles from './admin.module.scss'
 
-export const Admin = ({ }) => {
+export const Admin = () => {
   const { user, loading, isAuth } = useSelector(userSelector)
 
   if(loading) return <PreloaderUI />

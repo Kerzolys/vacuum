@@ -1,4 +1,3 @@
-import { LineUI } from "../ui/line-ui/line-ui";
 import { SectionLineUI } from "../ui/section-line-ui/section-line-ui";
 import vacuumCeamImg from "../../assets/lab/2J9A5330.webp";
 

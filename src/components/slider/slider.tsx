@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SliderProps } from "./type";
 
 import styles from "./slider.module.scss";
@@ -41,13 +41,14 @@ export const Slider: React.FC<SliderProps> = ({
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     if (content.length > 0) {
-      setCurrentSlide(
-        currentSlide === content.length - 1 ? 0 : currentSlide + 1
+      setCurrentSlide((prev) =>
+        prev === content.length - 1 ? 0 : prev + 1
       );
     }
-  };
+  }, [content.length]);
+  
   const previousSlide = () => {
     if (content.length > 0) {
       setCurrentSlide(
@@ -56,18 +57,22 @@ export const Slider: React.FC<SliderProps> = ({
     }
   };
 
-  const startInterval = () => {
-    intervalRef.current = setInterval(nextSlide, 3000);
-  };
-
-  const stopInterval = () => {
+  const stopInterval = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-  };
+  }, []);
+
+  const startInterval = useCallback(() => {
+    stopInterval();
+    intervalRef.current = setInterval(nextSlide, 3000);
+  }, [nextSlide, stopInterval]);
 
   useEffect(() => {
+    const node = sliderRef.current; // фиксируем DOM-элемент
+    if (!node) return;
+
     if (content.length > 0 && isAutoplay) {
       startInterval();
     }
@@ -82,18 +87,15 @@ export const Slider: React.FC<SliderProps> = ({
       }
     };
 
-    if (sliderRef.current) {
-      sliderRef.current.addEventListener("mouseenter", handleMouseEnter);
-      sliderRef.current.addEventListener("mouseleave", handleMouseLeave);
-    }
+    node.addEventListener("mouseenter", handleMouseEnter);
+    node.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
-      if (sliderRef.current) {
-        sliderRef.current.removeEventListener("mouseenter", handleMouseEnter);
-        sliderRef.current.removeEventListener("mouseleave", handleMouseLeave);
-      }
+      node.removeEventListener("mouseenter", handleMouseEnter);
+      node.removeEventListener("mouseleave", handleMouseLeave);
+      stopInterval();
     };
-  }, [content, isAutoplay]);
+  }, [content.length, isAutoplay, startInterval, stopInterval]);
 
   if (content.length === 0) {
     return <p>Скоро здесь будет много всего интересного!.</p>;
@@ -106,7 +108,13 @@ export const Slider: React.FC<SliderProps> = ({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <Button onClick={previousSlide} className={classNames(styles.slider__button, styles.slider__button_back)}>
+      <Button
+        onClick={previousSlide}
+        className={classNames(
+          styles.slider__button,
+          styles.slider__button_back
+        )}
+      >
         <ArrowBack style={{ color: "white", fontSize: "48px" }} />
       </Button>
       <SliderUI
@@ -115,7 +123,13 @@ export const Slider: React.FC<SliderProps> = ({
         type={type}
         currentSlide={currentSlide}
       />
-      <Button onClick={nextSlide} className={classNames(styles.slider__button, styles.slider__button_forward)}>
+      <Button
+        onClick={nextSlide}
+        className={classNames(
+          styles.slider__button,
+          styles.slider__button_forward
+        )}
+      >
         <ArrowForward style={{ color: "white", fontSize: "48px" }} />
       </Button>
     </div>

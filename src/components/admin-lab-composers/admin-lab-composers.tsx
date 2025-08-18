@@ -5,16 +5,15 @@ import { LabApplicantBlockUI } from "../ui/lab-applicant-block-ui/lab-applicant-
 import { PreloaderUI } from "../ui/preloader-ui/preloader-ui";
 
 export const AdminLabComposers = () => {
-  const { data, error, isLoading } = useSWR(
-    "labComposers",
-    fetchComposerApplications
-  );
+  const { data, isLoading } = useSWR("labComposers", fetchComposerApplications);
 
   if (isLoading) return <PreloaderUI />;
 
   return (
     <div className={styles.container}>
-      {data?.map((d) => <LabApplicantBlockUI data={d} key={d.id} />)}
+      {data?.map((d) => (
+        <LabApplicantBlockUI data={d} key={d.id} />
+      ))}
     </div>
   );
 };

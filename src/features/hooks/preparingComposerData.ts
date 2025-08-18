@@ -5,7 +5,7 @@ import {
 } from "../../utils/types";
 import { ObjectCannedACL, PutObjectCommand } from "@aws-sdk/client-s3";
 import s3Client from "../../services/yandexCloud/yc";
-import { collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../services/firebase/firebase";
 
 const id = uuidv4();

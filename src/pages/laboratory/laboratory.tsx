@@ -10,7 +10,7 @@ import { LaboratoryRegistration } from "../../components/laboratory-registration
 
 import styles from "./laboratory.module.scss";
 
-type TabType = "lab" | "terms and conditions" | "registration" ;
+type TabType = "lab" | "terms and conditions" | "registration";
 const tabs: { id: number; tabName: string; type: TabType }[] = [
   {
     id: 1,
@@ -21,11 +21,6 @@ const tabs: { id: number; tabName: string; type: TabType }[] = [
     id: 2,
     tabName: "Условия участия",
     type: "terms and conditions",
-  },
-  {
-    id: 3,
-    tabName: "Регистрация",
-    type: "registration",
   },
 ];
 

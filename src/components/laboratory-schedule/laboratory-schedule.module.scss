@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  &__lectionsBlock {
+    display: flex;
+    flex-direction: column;
+    &__lections {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      &__lection {
+        display: flex;
+        flex-direction: column;
+        color: #fff;
+        & h4 {
+          margin: 0;
+        }
+      }
+    }
+  }
+}

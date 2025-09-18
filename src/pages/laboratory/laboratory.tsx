@@ -9,8 +9,9 @@ import { LaboratoryTermsAndConditions } from "../../components/laboratory-terms-
 import { LaboratoryRegistration } from "../../components/laboratory-registration/laboratory-registration";
 
 import styles from "./laboratory.module.scss";
+import { LaboratorySchedule } from "../../components/laboratory-schedule/laboratory-schedule";
 
-type TabType = "lab" | "terms and conditions" | "registration";
+type TabType = "lab" | "terms and conditions" | "registration" | "schedule";
 const tabs: { id: number; tabName: string; type: TabType }[] = [
   {
     id: 1,
@@ -19,8 +20,8 @@ const tabs: { id: number; tabName: string; type: TabType }[] = [
   },
   {
     id: 2,
-    tabName: "Условия участия",
-    type: "terms and conditions",
+    tabName: "Расписание лаборатории",
+    type: "schedule",
   },
 ];
 
@@ -56,10 +57,12 @@ export const Laboratory = () => {
             ))}
           </div>
           {tabType === "lab" && <LaboratoryInfo />}
-          {tabType === "terms and conditions" && (
+          {tabType === "schedule" && <LaboratorySchedule />}
+
+          {/* {tabType === "terms and conditions" && (
             <LaboratoryTermsAndConditions />
-          )}
-          {tabType === "registration" && <LaboratoryRegistration />}
+          )} */}
+          {/* {tabType === "registration" && <LaboratoryRegistration />} */}
         </div>
       </div>
       <Footer />

@@ -6,15 +6,55 @@ import { partners } from "../../utils/partnersInfo";
 import { PartnerAccordeon } from "../ui/partner-accordion/partner-accordion";
 import { lectors } from "../../utils/lectorsInfo";
 import { LectorBlockUI } from "../ui/lector-block-ui/lector-block-ui";
+import { composerResults, quartetResults } from "../../utils/results";
+import { WinnerBlockUI } from "../ui/winner-block-ui/winner-block-ui";
 
 export const LaboratoryInfo = () => {
   return (
     <div className={styles.container}>
       <div className={styles.container__content}>
         <h3>
-          Открыт приём заявок на участие в лаборатории для композиторов и
+          Результаты приёма заявок на участие в лаборатории для композиторов и
           струнных квартетов — Vacuum Quartet Lab.
         </h3>
+        <SectionLineUI />
+        <div className={styles.container__results}>
+          <div className={styles.container__results__composers}>
+            {composerResults.map((c) => (
+              <WinnerBlockUI data={c} key={c.id} />
+            ))}
+          </div>
+          <div className={styles.container__results__quartets}>
+            {quartetResults.map((q) => (
+              <WinnerBlockUI data={q} key={q.id} />
+            ))}
+          </div>
+          <div>
+            <p className={styles.container__results__text}>
+              Благодарим всех, кто подал заявку на опен-колл лаборатории! Мы
+              невероятно рады большому интересу к нашему проекту, вдохновлены
+              возможностью поделиться своими знаниями с молодыми музыкантами и с
+              нетерпением ждем начала совместных творческих экспериментов!
+            </p>
+            <p className={styles.container__results__text}>
+              Приглашаем всех посещать лекции и концерты Vacuum Quartet Lab в
+              арт-пространстве «Артемьев». Расписание будет опубликовано на
+              сайте и в соцсетях в ближайшее время.
+            </p>
+            <p className={styles.container__results__text}>
+              Отобранные композиторы будут сочинять под руководством тьюторов, а
+              в воплощении их нестандартных творческих замыслов им помогут
+              инженеры Центра электроакустической музыки (ЦЭАМ). Струнные
+              квартеты получат уникальный опыт работы с новыми сочинениями: на
+              финальном концерте они исполнят акустические пьесы и мировые
+              премьеры композиторов-участников.
+            </p>
+            <p className={styles.container__results__text}>
+              Заключительный концерт лаборатории станет частью фестиваля Gnesin
+              Contemporary Music Week.
+            </p>
+          </div>
+        </div>
         <SectionLineUI />
         <p>
           Совместный проект струнного квартета Vacuum, Центра

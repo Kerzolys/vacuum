@@ -116,3 +116,18 @@ export type TRegistrationStringQuartetValues = {
   motivation_letter: File | null;
   email: string;
 };
+
+export type TWinner = {
+  name?: string;
+  id: number;
+  photo: string;
+  bio: string;
+  members?: string[];
+};
+
+export type TLection = {
+  date: string;
+  title: string;
+  lector: TLector;
+  id: number;
+};

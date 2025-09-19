@@ -130,4 +130,7 @@ export type TLection = {
   title: string;
   lector: TLector;
   id: number;
+  time: string;
+  venue: string;
+  registration_link: string;
 };

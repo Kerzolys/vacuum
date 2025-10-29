@@ -74,4 +74,21 @@
       flex-wrap: wrap;
     }
   }
+  &__final {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    &__piece {
+      & span {
+        cursor: help;
+      }
+    }
+    & ul {
+      margin: 0;
+      padding: 0;
+      & li {
+        list-style: none;
+      }
+    }
+  }
 }

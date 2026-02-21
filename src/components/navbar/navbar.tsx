@@ -22,11 +22,10 @@ export const Navbar = ({
   const location = useLocation();
 
   const adminLinks = [
-    { path: "/admin/about", text: "About" },
-    { path: "/admin/events", text: "Events" },
-    { path: "/admin/media", text: "Media" },
-    { path: "/admin/gallery", text: "Gallery" },
-    { path: "/admin/laboratory", text: "Laboratory" },
+    { path: "/admin/about", text: "О нас" },
+    { path: "/admin/events", text: "Афиша" },
+    { path: "/admin/media", text: "Медиа" },
+    { path: "/admin/gallery", text: "Галерея" },
     { path: "/", text: "Home" },
   ];
 
@@ -58,7 +57,7 @@ export const Navbar = ({
       ) : (
         <>
           <ButtonUI
-            buttonText="About"
+            buttonText="О нас"
             onClick={
               location.pathname === "/"
                 ? () => handleScroll("#about")
@@ -69,7 +68,7 @@ export const Navbar = ({
             }
           />
           <ButtonUI
-            buttonText="Events"
+            buttonText="Афиша"
             onClick={
               location.pathname === "/"
                 ? () => handleScroll("#events")
@@ -80,7 +79,7 @@ export const Navbar = ({
             }
           />
           <ButtonUI
-            buttonText="Media"
+            buttonText="Медиа"
             onClick={
               location.pathname === "/"
                 ? () => handleScroll("#media")
@@ -91,7 +90,7 @@ export const Navbar = ({
             }
           />
           <ButtonUI
-            buttonText="Gallery"
+            buttonText="Галерея"
             onClick={
               location.pathname === "/"
                 ? () => handleScroll("#gallery")
@@ -100,10 +99,6 @@ export const Navbar = ({
                     handleScroll("#gallery");
                   }
             }
-          />
-          <ButtonUI
-            buttonText="Laboratory 2025"
-            onClick={() => navigate("/laboratory")}
           />
         </>
       )}

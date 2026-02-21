@@ -23,7 +23,7 @@ export const Events = () => {
   };
   return (
     <section id="events" className={styles.events}>
-      <h1 className={styles.events__title}>Events</h1>
+      <h1 className={styles.events__title}>Афиша</h1>
       <SectionLineUI />
       {actualEvents.length > 0 &&
         actualEvents.map((event) => {

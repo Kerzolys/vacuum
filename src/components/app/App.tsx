@@ -8,8 +8,8 @@ import { AdminEvents } from "../../pages/admin-events/admin-events";
 import { AdminMedia } from "../../pages/admin-media/admin-media";
 import { AdminGallery } from "../../pages/admin-gallery/admin-gallery";
 import { AdminAbout } from "../../pages/admin-about/admin-about";
-import { Laboratory } from "../../pages/laboratory/laboratory";
-import { AdminLaboratory } from "../../pages/admin-laboratory/admin-laboratory";
+// import { Laboratory } from "../../pages/laboratory/laboratory";
+// import { AdminLaboratory } from "../../pages/admin-laboratory/admin-laboratory";
 import { ProtectedRoute } from "../protected-route/protected-route";
 import { PreloaderUI } from "../ui/preloader-ui/preloader-ui";
 
@@ -62,15 +62,15 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/admin/laboratory"
           element={
             <ProtectedRoute>
               <AdminLaboratory />
             </ProtectedRoute>
           }
-        />
-        <Route path="/laboratory" element={<Laboratory />}></Route>
+        /> */}
+        {/* <Route path="/laboratory" element={<Laboratory />}></Route> */}
       </Routes>
     </>
   );

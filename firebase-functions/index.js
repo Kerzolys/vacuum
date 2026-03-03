@@ -1,15 +1,18 @@
-import fetchEvents from "../src/services/fetcher";
-
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const fetch = require("node-fetch");
 
 admin.initializeApp();
 
-const db = admin.firestore();
+const {
+  startAddEventFlow,
+  handleAddEventStep,
+  getEventsList,
+  handleArcheveEventStep,
+  startArchieveEventFlow,
+} = require("./services/events.js");
 
-const TELEGRAM_TOKEN = "8261564214:AAHe_ZjfbgDQfdL-kOFutATVVwLO-bEAk6w";
-const ADMIN_ID = 644120863;
+const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
+const ADMIN_ID = Number(process.env.ADMIN_ID);
 
 exports.telegramWebhook = functions.https.onRequest(async (req, res) => {
   try {
@@ -22,7 +25,7 @@ exports.telegramWebhook = functions.https.onRequest(async (req, res) => {
 
     const chatId = message.chat.id;
     const userId = message.from.id;
-    const text = message.text;
+    const text = (message.text || "").trim();
 
     if (userId !== ADMIN_ID) {
       await sendMessage(chatId, "Access denied");
@@ -32,36 +35,37 @@ exports.telegramWebhook = functions.https.onRequest(async (req, res) => {
 
     if (text === "/start") {
       await sendMessage(chatId, "Firebase connected");
+      res.sendStatus(200);
+      return;
     }
 
     if (text === "/listevents") {
-      try {
-        const events = fetchEvents();
-        if (events.length === 0) {
-          await sendMessage(chatId, "Событий пока нет.");
-        } else {
-          const messageText = events
-            .map((ev) => {
-              const dateTime = `${ev.date || ""} ${ev.time || ev}`.trim();
-              const location = ev.location ? `, место: ${ev.location}` : "";
-              const link = ev.link ? `\nСсылка: ${ev.link}` : "";
-              const program = ev.program?.length
-                ? `\nПрограмма: ${ev.program.join(", ")}`
-                : "";
-              return `• ${ev.title || "Без названия"} (${dateTime}${location})${program}${link}`;
-            })
-            .join("\n\n");
-
-          await sendMessage(chatId, messageText);
-        }
-      } catch (err) {
-        console.log(err);
-
-        sendMessage(chatId, `Ошибка получения событий: ${err.message}`);
-      }
+      await getEventsList(chatId, sendMessage);
+      res.sendStatus(200);
+      return;
     }
 
-    res.sendStatus(200);
+    if (text === "/addevent") {
+      await startAddEventFlow(userId, chatId, sendMessage);
+      res.sendStatus(200);
+      return;
+    }
+
+    if (text === "/archieveevent") {
+      await startArchieveEventFlow(userId, chatId, sendMessage);
+      res.sendStatus(200);
+      return;
+    }
+
+    if (await handleAddEventStep({ userId, chatId, text, sendMessage })) {
+      res.sendStatus(200);
+      return;
+    }
+
+    if (await handleArcheveEventStep({ userId, chatId, text, sendMessage })) {
+      res.sendStatus(200);
+      return;
+    }
   } catch (err) {
     console.error(err);
     res.sendStatus(500);

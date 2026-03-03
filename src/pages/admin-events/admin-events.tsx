@@ -24,7 +24,7 @@ import styles from "./admin-events.module.scss";
 export const AdminEvents = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalType, setModalType] = useState<"add" | "edit" | "delete" | null>(
-    null
+    null,
   );
   const [values, setValues] = useState<TEvent>({
     date: "",
@@ -56,7 +56,7 @@ export const AdminEvents = () => {
       mutate(
         "events",
         (currentEvents: TEvent[] = []) => [...currentEvents, newEvent],
-        false
+        false,
       );
       setIsOpen(false);
     } catch (err) {
@@ -77,9 +77,9 @@ export const AdminEvents = () => {
         "events",
         (currentEvents: TEvent[] = []) =>
           currentEvents.map((event) =>
-            event.id === updatedEvent.id ? updatedEvent : event
+            event.id === updatedEvent.id ? updatedEvent : event,
           ),
-        false
+        false,
       );
       setIsOpen(false);
     } catch (err) {
@@ -95,9 +95,9 @@ export const AdminEvents = () => {
         "events",
         (currentEvents: TEvent[] = []) =>
           currentEvents.map((e) =>
-            e.id === event.id ? { ...e, archived: true } : e
+            e.id === event.id ? { ...e, archived: true } : e,
           ),
-        false
+        false,
       );
     } catch (err) {
       console.error(`Error archiving event: ${err}`);
@@ -105,6 +105,7 @@ export const AdminEvents = () => {
   };
 
   const handleOpenDelete = (event: TEvent) => {
+    console.log(event);
     setValues(event);
     setModalType("delete");
     setIsOpen(true);
@@ -112,12 +113,13 @@ export const AdminEvents = () => {
 
   const handleDelete = async (eventId: string) => {
     try {
+      console.log(eventId);
       await deleteEvent(eventId);
       mutate(
         "events",
         (currentEvents: TEvent[] = []) =>
           currentEvents.filter((event) => event.id !== eventId),
-        false
+        false,
       );
       setIsOpen(false);
     } catch (err) {
@@ -133,7 +135,7 @@ export const AdminEvents = () => {
       ...values,
       [name]:
         name === "program"
-          ? value.split(",").map((item) => item.trim())
+          ? value.split(";").map((item) => item.trim())
           : value,
     });
   };
@@ -235,7 +237,7 @@ export const AdminEvents = () => {
       label: "Program",
       name: "program",
       type: "text",
-      value: values.program.join(", "),
+      value: values.program.join("; "),
       variant: "outlined",
       error: values.program.length > 0 ? "" : "Поле должно быть заполненным",
       required: false,
@@ -340,21 +342,6 @@ export const AdminEvents = () => {
                       startIcon={<Archive />}
                     />
                   </div>
-                  {isOpen && modalType === "delete" ? (
-                    <ModalConfirmation
-                      onCancel={handleClose}
-                      onConfirm={() => handleDelete(event.id!)}
-                    />
-                  ) : isOpen && modalType === "edit" ? (
-                    <ModalUI onClose={handleClose}>
-                      <FormUI
-                        inputs={inputs}
-                        buttons={buttons}
-                        onChange={handleChange}
-                        onSubmit={handleSubmit}
-                      />
-                    </ModalUI>
-                  ) : null}
                 </div>
               );
             })
@@ -379,6 +366,21 @@ export const AdminEvents = () => {
               />
             </ModalUI>
           )}
+          {isOpen && modalType === "delete" && values.id ? (
+            <ModalConfirmation
+              onCancel={handleClose}
+              onConfirm={() => handleDelete(values.id!)}
+            />
+          ) : isOpen && modalType === "edit" ? (
+            <ModalUI onClose={handleClose}>
+              <FormUI
+                inputs={inputs}
+                buttons={buttons}
+                onChange={handleChange}
+                onSubmit={handleSubmit}
+              />
+            </ModalUI>
+          ) : null}
         </div>
       </AdminLayoutUI>
     </>

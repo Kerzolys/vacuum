@@ -1,17 +1,14 @@
 meta:
   environment: node
   toolchain:
-    name: browser          # ← это ключ! для статических React/Vue/Angular приложений после билда
-    version: "18"          # или 20 — та же, что была в твоём файле
+    name: browser
+    version: "18"          # или "20", если твой проект на новой версии Node
 
 build:
-  skip: false
-  additionalCommands: null
   artifacts:
-    build/*: /             # ← артефакты из папки build/ → в корень контейнера
+    build/*: /             # копирует всё из ./build в корень контейнера (/app)
 
 run:
-  web:                     # ← вместо scriptName/command используем блок web для статики
-    workdir: build         # ← точка, откуда раздавать файлы
-    spa: true              # ← для React Router (все пути → index.html)
-  # можно оставить containerPort: "80", но обычно не обязательно
+  web:
+    workdir: build         # раздавать статику именно из этой папки
+    spa: true              # rewrite всех путей на index.html (для React Router)

@@ -1,17 +1,15 @@
 meta:
-  environment: node
-  toolchain:
-    name: npm
-    version: "18"
+  name: мой-cra-проект           # ← можно убрать или поменять
+  environment: static            # ← самое важное! или runtime: static (в новых версиях пишут runtime)
+  # toolchain не нужен для static
+
 build:
-  skip: false
-  additionalCommands: null
-  artifacts:
-    "*": /
+  commands:                      # вместо additionalCommands
+    - npm ci                     # или yarn install --frozen-lockfile
+    - npm run build
+
 run:
-  scriptName: index.js
-  scriptArguments: null
-  nodeArguments: null
-  command: npm run start
-  persistenceMount: /data
-  containerPort: "80"
+  web:
+    workdir: build               # ← Amvera будет раздавать файлы именно из этой папки
+    # port: 80                   # обычно не нужно указывать
+    spa: true                    # ← важно для React Router — все пути → index.html

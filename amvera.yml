@@ -1,5 +1,5 @@
 meta:
-  name: мой-cra-проект           # ← можно убрать или поменять
+  name: vacuum-app           # ← можно убрать или поменять
   environment: static            # ← самое важное! или runtime: static (в новых версиях пишут runtime)
   # toolchain не нужен для static
 

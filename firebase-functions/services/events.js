@@ -18,6 +18,13 @@ const ARCHIEVE_EVENT_STEP = [
   },
 ];
 
+const DELETE_EVENT_STEP = [
+  {
+    key: "id",
+    question: "Какое событие вы хотите удалить (введите id события)?",
+  },
+];
+
 async function fetchEvents() {
   const snapshot = await db
     .collection("events")
@@ -70,36 +77,22 @@ async function getEventsList(chatId, sendMessage) {
 
 async function startAddEventFlow(userId, chatId, sendMessage) {
   await db.collection("eventDrafts").doc(String(userId)).set({
+    flow: "add",
     currentStepIndex: 0,
     data: {},
   });
 
-  const firstStep = ADD_EVENT_STEPS[0];
   await sendMessage(
     chatId,
-    `${firstStep.question}\n(можно написать /skip, чтобы пропустить)`,
+    `${ADD_EVENT_STEPS[0].question}\n(можно написать /skip, чтобы пропустить)`,
   );
 }
 
-async function handleAddEventStep({ userId, chatId, text, sendMessage }) {
-  const draftRef = db.collection("eventDrafts").doc(String(userId));
-  const draftSnap = await draftRef.get();
-
-  if (!draftSnap.exists) {
-    return false;
-  }
-
-  if (text.startsWith("/")) {
-    await sendMessage(chatId, "Введите id события.");
-    return true;
-  }
-
-  const draft = draftSnap.data();
+async function handleAddFlow(draftRef, draft, chatId, text, sendMessage) {
   let { currentStepIndex, data } = draft;
   const step = ADD_EVENT_STEPS[currentStepIndex];
 
-  const lower = text.toLowerCase();
-  const isSkip = lower === "/skip" || lower === "пропустить";
+  const isSkip = text.toLowerCase() === "/skip";
 
   if (!isSkip) {
     if (step.key === "program") {
@@ -112,28 +105,22 @@ async function handleAddEventStep({ userId, chatId, text, sendMessage }) {
     }
   }
 
-  currentStepIndex += 1;
+  currentStepIndex++;
 
   if (currentStepIndex >= ADD_EVENT_STEPS.length) {
-    const newEvent = {
+    await db.collection("events").add({
       ...data,
       archived: false,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    };
+    });
 
-    await db.collection("events").add(newEvent);
     await draftRef.delete();
-
-    await sendMessage(
-      chatId,
-      `Событие создано:\n${newEvent.title || "Без названия"}`,
-    );
+    await sendMessage(chatId, "Событие создано.");
   } else {
-    await draftRef.set({ currentStepIndex, data });
-    const nextStep = ADD_EVENT_STEPS[currentStepIndex];
+    await draftRef.set({ flow: "add", currentStepIndex, data });
     await sendMessage(
       chatId,
-      `${nextStep.question}\n(можно написать /skip, чтобы пропустить)`,
+      `${ADD_EVENT_STEPS[currentStepIndex].question}\n(можно написать /skip)`,
     );
   }
 
@@ -141,56 +128,89 @@ async function handleAddEventStep({ userId, chatId, text, sendMessage }) {
 }
 
 async function startArchieveEventFlow(userId, chatId, sendMessage) {
-  await db.collection("archievDrafts").doc(String(userId)).set({
+  await db.collection("eventDrafts").doc(String(userId)).set({
+    flow: "archive",
     currentStepIndex: 0,
     data: {},
   });
 
-  const firstStep = ARCHIEVE_EVENT_STEP[0];
-  await sendMessage(chatId, firstStep.question);
+  await sendMessage(chatId, ARCHIEVE_EVENT_STEP[0].question);
 }
 
-async function handleArcheveEventStep({ userId, chatId, text, sendMessage }) {
-  const draftRef = db.collection("archievDrafts").doc(String(userId));
+async function handleArchiveFlow(draftRef, draft, chatId, text, sendMessage) {
+  const eventId = text.trim();
+  const eventRef = db.collection("events").doc(eventId);
+  const snap = await eventRef.get();
+
+  if (!snap.exists) {
+    await sendMessage(chatId, "Событие не найдено.");
+    await draftRef.delete();
+    return true;
+  }
+
+  await eventRef.update({ archived: true });
+  await draftRef.delete();
+
+  await sendMessage(chatId, `Событие ${eventId} заархивировано.`);
+  return true;
+}
+
+async function startDeleteEventFlow(userId, chatId, sendMessage) {
+  await db.collection("eventDrafts").doc(String(userId)).set({
+    flow: "delete",
+    currentStepIndex: 0,
+    data: {},
+  });
+
+  await sendMessage(chatId, DELETE_EVENT_STEP[0].question);
+}
+
+async function handleDeleteFlow(draftRef, draft, chatId, text, sendMessage) {
+  const eventId = text.trim();
+  const eventRef = db.collection("events").doc(eventId);
+  const snap = await eventRef.get();
+
+  if (!snap.exists) {
+    await sendMessage(chatId, "Событие не найдено.");
+    await draftRef.delete();
+    return true;
+  }
+
+  await eventRef.delete();
+  await draftRef.delete();
+
+  await sendMessage(chatId, `Событие ${eventId} удалено.`);
+  return true;
+}
+
+async function handleEventDraftStep({ userId, chatId, text, sendMessage }) {
+  const draftRef = db.collection("eventDrafts").doc(String(userId));
   const draftSnap = await draftRef.get();
 
-  if (!draftSnap.exists) {
-    return false;
-  }
+  if (!draftSnap.exists) return false;
 
   const draft = draftSnap.data();
-  let { currentStepIndex, data } = draft;
-  const step = ARCHIEVE_EVENT_STEP[currentStepIndex];
-  data[step.key] = text;
+  const { flow, currentStepIndex } = draft;
 
-  currentStepIndex += 1;
-
-  if (currentStepIndex >= ARCHIEVE_EVENT_STEP.length) {
-    const eventId = text.trim();
-    const eventRef = db.collection("events").doc(eventId);
-    const snap = await eventRef.get();
-
-    if (!snap.exists) {
-      await sendMessage(
-        chatId,
-        `События с id ${eventId} не существует. Проверьте id`,
-      );
-      return;
-    }
-
-    await eventRef.update({ archived: true });
-    await draftRef.delete();
-
-    await sendMessage(chatId, `Событие ${eventId} заархивировано.`);
+  if (flow === "add") {
+    return handleAddFlow(draftRef, draft, chatId, text, sendMessage);
   }
 
-  return true;
+  if (flow === "archive") {
+    return handleArchiveFlow(draftRef, draft, chatId, text, sendMessage);
+  }
+
+  if (flow === "delete") {
+    return handleDeleteFlow(draftRef, draft, chatId, text, sendMessage);
+  }
+
+  return false;
 }
 
 module.exports = {
   startAddEventFlow,
-  handleAddEventStep,
   getEventsList,
   startArchieveEventFlow,
-  handleArcheveEventStep,
+  startDeleteEventFlow,
+  handleEventDraftStep,
 };

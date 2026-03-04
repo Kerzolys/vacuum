@@ -4,11 +4,11 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 
 const {
-  startAddEventFlow,
-  handleAddEventStep,
   getEventsList,
-  handleArcheveEventStep,
+  startAddEventFlow,
   startArchieveEventFlow,
+  startDeleteEventFlow,
+  handleEventDraftStep,
 } = require("./services/events.js");
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
@@ -17,6 +17,14 @@ const ADMIN_ID = Number(process.env.ADMIN_ID);
 exports.telegramWebhook = functions.https.onRequest(async (req, res) => {
   try {
     const message = req.body.message;
+
+    const emptyFlow = async () =>
+      await admin
+        .firestore()
+        .collection("eventDrafts")
+        .doc(String(userId))
+        .delete()
+        .catch(() => {});
 
     if (!message) {
       res.sendStatus(200);
@@ -46,26 +54,32 @@ exports.telegramWebhook = functions.https.onRequest(async (req, res) => {
     }
 
     if (text === "/addevent") {
+      emptyFlow();
       await startAddEventFlow(userId, chatId, sendMessage);
       res.sendStatus(200);
       return;
     }
 
     if (text === "/archieveevent") {
+      emptyFlow();
       await startArchieveEventFlow(userId, chatId, sendMessage);
       res.sendStatus(200);
       return;
     }
 
-    if (await handleAddEventStep({ userId, chatId, text, sendMessage })) {
+    if (text === "/deleteevent") {
+      emptyFlow();
+      await startDeleteEventFlow(userId, chatId, sendMessage);
       res.sendStatus(200);
       return;
     }
 
-    if (await handleArcheveEventStep({ userId, chatId, text, sendMessage })) {
-      res.sendStatus(200);
-      return;
+    if (await handleEventDraftStep({ userId, chatId, text, sendMessage })) {
+      return res.sendStatus(200);
     }
+
+    res.sendStatus(200);
+    return;
   } catch (err) {
     console.error(err);
     res.sendStatus(500);

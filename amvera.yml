@@ -1,15 +1,17 @@
 meta:
-  name: vacuum-app           # ← можно убрать или поменять
-  environment: static            # ← самое важное! или runtime: static (в новых версиях пишут runtime)
-  # toolchain не нужен для static
+  environment: node
+  toolchain:
+    name: browser          # ← это ключ! для статических React/Vue/Angular приложений после билда
+    version: "18"          # или 20 — та же, что была в твоём файле
 
 build:
-  commands:                      # вместо additionalCommands
-    - npm ci                     # или yarn install --frozen-lockfile
-    - npm run build
+  skip: false
+  additionalCommands: null
+  artifacts:
+    build/*: /             # ← артефакты из папки build/ → в корень контейнера
 
 run:
-  web:
-    workdir: build               # ← Amvera будет раздавать файлы именно из этой папки
-    # port: 80                   # обычно не нужно указывать
-    spa: true                    # ← важно для React Router — все пути → index.html
+  web:                     # ← вместо scriptName/command используем блок web для статики
+    workdir: build         # ← точка, откуда раздавать файлы
+    spa: true              # ← для React Router (все пути → index.html)
+  # можно оставить containerPort: "80", но обычно не обязательно

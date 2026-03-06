@@ -5,7 +5,9 @@ meta:
     name: browser
     version: "18"
 build:
-  additionalCommands: null
+    additionalCommands:
+    - npm install
+    - npm run build
   artifacts:
     build/*: /
 run: {}

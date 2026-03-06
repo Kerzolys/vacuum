@@ -1,12 +1,12 @@
 meta:
-  environment: nodejs-browser
+  environment: node
   toolchain:
-    name: npm
-    version: 20
+    name: browser
+    version: 18  # Можно указать 18, 20 или 22
 
 build:
   command: npm install && npm run build
-  artifacts: build
+  artifacts: build  # Если используете Vite, замените на dist
 
 run:
   index: index.html

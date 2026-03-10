@@ -11,6 +11,8 @@ const {
   handleEventDraftStep,
 } = require("./services/events.js");
 
+const { getImagesList } = require("./services/images.js");
+
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const ADMIN_ID = Number(process.env.ADMIN_ID);
 
@@ -76,6 +78,12 @@ exports.telegramWebhook = functions.https.onRequest(async (req, res) => {
 
     if (await handleEventDraftStep({ userId, chatId, text, sendMessage })) {
       return res.sendStatus(200);
+    }
+
+    if (text === "/listimages") {
+      await getImagesList(chatId, sendMessage);
+      res.sendStatus(200);
+      return;
     }
 
     res.sendStatus(200);

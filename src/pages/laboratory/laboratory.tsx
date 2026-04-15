@@ -5,8 +5,7 @@ import { ButtonUI } from "../../components/ui/button-ui/button-ui";
 import { useNavigate } from "react-router-dom";
 import { TabUI } from "../../components/ui/tab-ui/tab-ui";
 import { useState } from "react";
-import { LaboratoryTermsAndConditions } from "../../components/laboratory-terms-and-conditions/laboratory-terms-and-conditions";
-import { LaboratoryRegistration } from "../../components/laboratory-registration/laboratory-registration";
+
 
 import styles from "./laboratory.module.scss";
 import { LaboratorySchedule } from "../../components/laboratory-schedule/laboratory-schedule";

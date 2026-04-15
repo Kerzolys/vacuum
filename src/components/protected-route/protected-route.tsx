@@ -4,7 +4,7 @@ import { userSelector } from "../../features/userSlice.ts/userSlice";
 import { PreloaderUI } from "../ui/preloader-ui/preloader-ui";
 
 type Props = {
-  children: JSX.Element;
+  children: React.ReactNode;
 };
 
 export const ProtectedRoute = ({ children }: Props) => {

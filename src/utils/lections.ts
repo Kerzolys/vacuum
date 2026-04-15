@@ -1,4 +1,4 @@
-import { TLection } from "./types";
+import type { TLection } from "./types";
 import { lectors } from "./lectorsInfo";
 
 export const lections: TLection[] = [

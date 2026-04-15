@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ButtonUI } from "../button-ui/button-ui";
 import styles from "./partner-accordion.module.scss";
-import { TPartner } from "../../../utils/types";
+import type { TPartner } from "../../../utils/types";
 
 type Props = {
   data: TPartner;

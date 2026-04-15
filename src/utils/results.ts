@@ -1,4 +1,4 @@
-import { TWinner } from "./types";
+import type { TWinner } from "./types";
 import frolovPhoto from "../assets/lab/frolov.jpeg";
 
 export const composerResults: TWinner[] = [

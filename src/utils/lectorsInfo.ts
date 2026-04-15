@@ -1,4 +1,4 @@
-import { TLector } from "./types";
+import type { TLector } from "./types";
 import glebImg from "../assets/lab/gleb.jpg";
 import yuliaImg from "../assets/lab/yulia.webp";
 import sashaImg from "../assets/lab/sasha.jpg";

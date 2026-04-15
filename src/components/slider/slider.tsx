@@ -39,7 +39,7 @@ export const Slider: React.FC<SliderProps> = ({
   };
 
   const sliderRef = useRef<HTMLDivElement | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<number | null>(null);
 
   const nextSlide = useCallback(() => {
     if (content.length > 0) {

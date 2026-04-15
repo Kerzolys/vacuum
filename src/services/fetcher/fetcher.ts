@@ -207,7 +207,7 @@ export const uploadToYandex = async (file: File) => {
   const arrayBuffer = await file.arrayBuffer();
 
   const params = {
-    Bucket: import.meta.env.REACT_APP_YANDEX_BUCKET_NAME!,
+    Bucket: import.meta.env.VITE_YANDEX_BUCKET_NAME!,
     Key: `images/${file.name}`,
     Body: new Uint8Array(arrayBuffer),
     ContentType: file.type,
@@ -219,7 +219,7 @@ export const uploadToYandex = async (file: File) => {
 
   try {
     await s3Client.send(command);
-    return `https://storage.yandexcloud.net/${import.meta.env.REACT_APP_YANDEX_BUCKET_NAME}/images/${file.name}`;
+    return `https://storage.yandexcloud.net/${import.meta.env.VITE_YANDEX_BUCKET_NAME}/images/${file.name}`;
   } catch (err) {
     console.error("Error uploading file:", err);
     throw err;
@@ -255,7 +255,7 @@ export const deleteImage = async (imageId: string, imageLink?: string) => {
       const key = url.pathname.split("/").slice(2).join("/");
 
       const command = new DeleteObjectCommand({
-        Bucket: import.meta.env.REACT_APP_YANDEX_BUCKET_NAME!,
+        Bucket: import.meta.env.VITE_YANDEX_BUCKET_NAME!,
         Key: key,
       });
 

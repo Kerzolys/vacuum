@@ -17,13 +17,20 @@ function App() {
   const { initialized } = useSelector(userSelector);
   const dispatch = useDispatch();
 
+  console.log("APP RENDER", { initialized });
+
+  useEffect(() => {
+  console.log("CHECK AUTH START");
+  dispatch(checkAuth());
+}, []);
+
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
 
-  if (!initialized) {
-    return <PreloaderUI />;
-  }
+  // if (!initialized) {
+  //   return <PreloaderUI />;
+  // }
 
   return (
     <>

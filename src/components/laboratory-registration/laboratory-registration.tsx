@@ -139,7 +139,7 @@ export const LaboratoryRegistration = () => {
     });
   };
 
-  const handleSubmit = async (evt: React.FormEvent) => {
+  const handleSubmit = async (evt: React.SubmitEvent<HTMLFormElement>) => {
     evt.preventDefault();
     try {
       if (formType === "composer") {

@@ -5,7 +5,7 @@ import type { InputUIProps } from "../input-ui/type";
 export type FormUIProps = {
   inputs: InputUIProps[];
   buttons: ButtonUIProps[];
-  onSubmit: (evt: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (evt: React.SubmitEvent<HTMLFormElement>) => void;
   onChange: (evt: React.ChangeEvent<HTMLInputElement>) => void;
   extraClass?: string;
   formHeader?: string;

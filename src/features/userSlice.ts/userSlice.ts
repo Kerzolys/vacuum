@@ -11,75 +11,63 @@ import {
 } from "firebase/auth";
 import { getCookie, setCookie } from "../../services/cookie";
 
-export const signUpUser = createAsyncThunk(
+export const signUpUser = createAsyncThunk<TUser, { email: string; password: string }>(
   "user/signUpUser",
-  async (
-    { email, password }: { email: string; password: string },
-    { dispatch }
-  ) => {
-    try {
-      const auth = getAuth();
-      const userCredentials = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+  async ({ email, password }, { dispatch }) => {
+    const auth = getAuth();
+    const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
 
-      const user = userCredentials.user;
-      if (user) {
-        const accessToken = await user.getIdToken();
-        const refreshToken = await user.refreshToken;
-        dispatch(setUser({ email, password, accessToken, refreshToken }));
-        setCookie("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
+    const user = userCredentials.user;   // ← всегда берём .user
 
-        return { email, password, accessToken, refreshToken };
-      }
-      return user;
-    } catch (error: any) {
-      const errorMessage =
-        error.code === "auth/email-already-in-use"
-          ? "This email is already registered."
-          : error.code === "auth/invalid-email"
-            ? "Invalid email address."
-            : "SignUp failed. Please try again later.";
-
-      dispatch(loginFailure(errorMessage));
-      throw new Error(errorMessage);
+    if (!user) {
+      throw new Error("User creation failed");
     }
+
+    const accessToken = await user.getIdToken();
+    const refreshToken = user.refreshToken;   // ← это string | null, проверь на null если нужно
+
+    const userData: TUser = {
+      email: user.email!,
+      password,                    // ты сам сохраняешь пароль (не очень безопасно, но оставил как было)
+      accessToken,
+      refreshToken: refreshToken || "",
+    };
+
+    dispatch(setUser(userData));
+    setCookie("accessToken", accessToken);
+    if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+
+    return userData;   // ← всегда возвращаем TUser
   }
 );
 
-export const loginUser = createAsyncThunk(
+export const loginUser = createAsyncThunk<TUser, { email: string; password: string }>(
   "user/loginUser",
-  async (
-    { email, password }: { email: string; password: string },
-    { dispatch }
-  ) => {
-    try {
-      const auth = getAuth();
-      const userCredentials = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredentials.user;
-      if (user) {
-        const accessToken = await user.getIdToken();
-        const refreshToken = user.refreshToken;
-        dispatch(setUser({ email, password, accessToken, refreshToken }));
-        setCookie("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
+  async ({ email, password }, { dispatch }) => {
+    const auth = getAuth();
+    const userCredentials = await signInWithEmailAndPassword(auth, email, password);
 
-        return { email, password, accessToken, refreshToken };
-      }
-      return user;
-    } catch (error) {
-      let errorMessage = "Login failed. Please check your email or password.";
+    const user = userCredentials.user;
 
-      dispatch(loginFailure(errorMessage));
-      throw new Error(errorMessage);
+    if (!user) {
+      throw new Error("Login failed");
     }
+
+    const accessToken = await user.getIdToken();
+    const refreshToken = user.refreshToken;
+
+    const userData: TUser = {
+      email: user.email!,
+      password,
+      accessToken,
+      refreshToken: refreshToken || "",
+    };
+
+    dispatch(setUser(userData));
+    setCookie("accessToken", accessToken);
+    if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+
+    return userData;   // ← всегда TUser
   }
 );
 
@@ -218,7 +206,7 @@ export const userSlice = createSlice({
         state.error = action.error.message || "An error occurred";
       })
       .addCase(checkAuth.pending, (state) => {
-        state.loading = true; // Начало загрузки
+        state.loading = true; 
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.loading = false;

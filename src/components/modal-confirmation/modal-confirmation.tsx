@@ -1,5 +1,5 @@
 import { ModalUI } from "../ui/modal-ui/modal-ui";
-import { ModalConfirmationProps } from "./type";
+import type { ModalConfirmationProps } from "./type";
 import { ButtonUI } from "../ui/button-ui/button-ui";
 
 import styles from "./modal-confirmation.module.scss";

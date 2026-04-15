@@ -3,6 +3,8 @@ import { ButtonUI } from "../ui/button-ui/button-ui";
 
 import styles from "./navbar.module.scss";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { LangSwitchUI } from "../ui/lang-switcher-ui/lang-switch-ui";
 
 export const Navbar = ({
   isHeader,
@@ -20,6 +22,7 @@ export const Navbar = ({
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const adminLinks = [
     { path: "/admin/about", text: "О нас" },
@@ -57,7 +60,7 @@ export const Navbar = ({
       ) : (
         <>
           <ButtonUI
-            buttonText="О нас"
+            buttonText={t("about")}
             onClick={
               location.pathname === "/"
                 ? () => handleScroll("#about")
@@ -68,7 +71,7 @@ export const Navbar = ({
             }
           />
           <ButtonUI
-            buttonText="Афиша"
+            buttonText={t("agenda")}
             onClick={
               location.pathname === "/"
                 ? () => handleScroll("#events")
@@ -79,7 +82,7 @@ export const Navbar = ({
             }
           />
           <ButtonUI
-            buttonText="Медиа"
+            buttonText={t("media")}
             onClick={
               location.pathname === "/"
                 ? () => handleScroll("#media")
@@ -90,7 +93,7 @@ export const Navbar = ({
             }
           />
           <ButtonUI
-            buttonText="Галерея"
+            buttonText={t("gallery")}
             onClick={
               location.pathname === "/"
                 ? () => handleScroll("#gallery")
@@ -100,6 +103,7 @@ export const Navbar = ({
                   }
             }
           />
+          <LangSwitchUI />
         </>
       )}
     </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./laboratory-registration.module.scss";
 import { ButtonUI } from "../ui/button-ui/button-ui";
 import type { InputUIProps } from "../ui/input-ui/type";
-import {
+import type {
   TRegistrationComposerValues,
   TRegistrationStringQuartetValues,
 } from "../../utils/types";

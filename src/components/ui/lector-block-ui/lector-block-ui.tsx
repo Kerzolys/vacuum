@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { TLector } from "../../../utils/types";
+import type { TLector } from "../../../utils/types";
 import styles from "./lector-block-ui.module.scss";
 import { ModalUI } from "../modal-ui/modal-ui";
 import { ButtonUI } from "../button-ui/button-ui";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   data: TLector;
@@ -10,6 +11,8 @@ type Props = {
 
 export const LectorBlockUI = ({ data }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { t } = useTranslation();
+
   const handleCloseModal = () => {
     setIsOpen(false);
   };
@@ -32,7 +35,7 @@ export const LectorBlockUI = ({ data }: Props) => {
             <div className={styles.content__info}>
               <h3>{data.name}</h3>
               <p>{data.description}</p>
-              <ButtonUI buttonText="Закрыть" onClick={handleCloseModal} />
+              <ButtonUI buttonText={t("close")} onClick={handleCloseModal} />
             </div>
           </div>
         </ModalUI>

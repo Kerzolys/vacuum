@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { TWinner } from "../../../utils/types";
+import type { TWinner } from "../../../utils/types";
 import styles from "./winner-block-ui.module.scss";
 import { ModalUI } from "../modal-ui/modal-ui";
 import { ButtonUI } from "../button-ui/button-ui";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   data: TWinner;
@@ -10,6 +11,8 @@ type Props = {
 
 export const WinnerBlockUI = ({ data }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { t } = useTranslation();
+
   const handleCloseModal = () => {
     setIsOpen(false);
   };
@@ -33,7 +36,7 @@ export const WinnerBlockUI = ({ data }: Props) => {
               {data.name && <h3>{data.name}</h3>}
               <p>{data.bio}</p>
               {data.members && data.members.map((m) => <p>{m}</p>)}
-              <ButtonUI buttonText="Закрыть" onClick={handleCloseModal} />
+              <ButtonUI buttonText={t("close")} onClick={handleCloseModal} />
             </div>
           </div>
         </ModalUI>

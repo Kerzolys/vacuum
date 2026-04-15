@@ -63,7 +63,7 @@ async function startAddImageFlow(userId, chatId, sendMessage) {
 
   await sendMessage(
     chatId,
-    `${ADD_IMAGE_STEPS[0].question}\n(можно написать /skip, чтобы пропустить)`,
+    `${ADD_IMAGE_STEPS[0].question}\n(можно написать /skip, чтобы пропустить)`
   );
 }
 
@@ -77,10 +77,10 @@ async function handleAddFlow(draftRef, draft, chatId, text, sendMessage) {
     data[step.key] = text;
   }
 
-  currentStepIndex++
+  currentStepIndex++;
 
-  if(currentStepIndex >= ADD_IMAGE_STEPS.length) {
-    const link = await uploadImage()
+  if (currentStepIndex >= ADD_IMAGE_STEPS.length) {
+    const link = await uploadImage();
   }
 }
 

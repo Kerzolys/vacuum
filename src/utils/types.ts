@@ -1,7 +1,10 @@
 import { FieldValue } from "firebase/firestore";
 
 export type TBio = {
-  paragraph: string;
+  paragraph: {
+    ru: string;
+    en: string;
+  };
   id?: string;
   position: number;
 };
@@ -9,9 +12,12 @@ export type TBio = {
 export type TEvent = {
   date?: string;
   time?: string;
-  location?: string;
-  title?: string;
-  program: string[];
+  location?: {
+    ru: string;
+    en: string;
+  };
+  title?: { ru: string; en: string };
+  program: { ru: string[]; en: string[] };
   link?: string;
   id?: string;
   createdAt?: string | FieldValue;
@@ -60,7 +66,7 @@ export type TLector = {
 export type TComposerApplication = {
   id: string;
   composer_name: string;
-  bio: String;
+  bio: string;
   photo_url: string;
   experience: string;
   media_materials: string[];

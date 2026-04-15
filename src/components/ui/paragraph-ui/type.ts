@@ -1,5 +1,5 @@
-import { TBio } from "../../../utils/types"
+import type { TBio } from "../../../utils/types";
 
 export type ParagraphUIProps = {
-  paragraph: TBio
-}
+  paragraph: TBio;
+};

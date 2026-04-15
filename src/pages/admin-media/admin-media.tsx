@@ -19,6 +19,7 @@ import { ModalConfirmation } from "../../components/modal-confirmation/modal-con
 
 import styles from "./admin-media.module.scss";
 import { AdminLayoutUI } from "../../components/ui/admin-layout-ui/admin-layout-ui";
+import { useTranslation } from "react-i18next";
 
 export const AdminMedia = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +30,8 @@ export const AdminMedia = () => {
     title: "",
     link: "",
   });
+
+  const { t } = useTranslation();
 
   const { data, error, isLoading } = useSWR("videos", fetchVideos);
   const updatedData = data?.map((video) => ({
@@ -193,7 +196,7 @@ export const AdminMedia = () => {
   ];
 
   if (isLoading) return <PreloaderUI />;
-  if (error) return <p>Что-то пошло не так, но мы это исправим!</p>;
+  if (error) return <p>{t("error")}</p>;
 
   return (
     <>

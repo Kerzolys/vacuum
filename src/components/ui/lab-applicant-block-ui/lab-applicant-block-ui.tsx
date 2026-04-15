@@ -1,11 +1,12 @@
 import { useState } from "react";
-import {
+import type {
   TComposerApplication,
   TStringQuartetApplication,
 } from "../../../utils/types";
 import styles from "./lab-applicant-block-ui.module.scss";
 import { ModalUI } from "../modal-ui/modal-ui";
 import { ButtonUI } from "../button-ui/button-ui";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   data: TComposerApplication | TStringQuartetApplication;
@@ -13,6 +14,7 @@ type Props = {
 
 export const LabApplicantBlockUI = ({ data }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { t } = useTranslation();
 
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
@@ -72,7 +74,7 @@ export const LabApplicantBlockUI = ({ data }: Props) => {
                 </>
               )}
               <h3>Аудио/видео материалы</h3>
-              {data.media_materials.map((a,i) => (
+              {data.media_materials.map((a, i) => (
                 <p key={a[i]}>{a}</p>
               ))}
               <h3>Откуда узнали о лаборатории</h3>
@@ -81,7 +83,7 @@ export const LabApplicantBlockUI = ({ data }: Props) => {
               <p>{data.motivation_letter}</p>
               <h3>Элетронный адрес</h3>
               <p>{data.email}</p>
-              <ButtonUI buttonText="Закрыть" onClick={handleClose} />
+              <ButtonUI buttonText={t("close")} onClick={handleClose} />
             </div>
           </div>
         </ModalUI>

@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { TUser } from "../../utils/types";
-import { RootState } from "../../services/store/store";
+import type { RootState } from "../../services/store/store";
+import type { User } from "firebase/auth";
 import {
-  User,
   createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,

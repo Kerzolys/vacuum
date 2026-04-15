@@ -19,6 +19,7 @@ import styles from "./admin-about.module.scss";
 import type { InputUIProps } from "../../components/ui/input-ui/type";
 import type { ButtonUIProps } from "../../components/ui/button-ui/type";
 import { PreloaderUI } from "../../components/ui/preloader-ui/preloader-ui";
+import { useTranslation } from "react-i18next";
 
 export const AdminAbout = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,17 +27,18 @@ export const AdminAbout = () => {
     null
   );
   const [values, setValues] = useState<TBio>({
-    paragraph: "",
+    paragraph: { ru: "", en: "" },
     position: 0,
   });
 
   const { data, error, isLoading } = useSWR("bio", fetchBio);
+  const { t } = useTranslation();
 
   const bio = data || [];
 
   const handleOpenAdd = () => {
     setValues({
-      paragraph: "",
+      paragraph: { ru: "", en: "" },
       position: 0,
     });
     setIsOpen(true);
@@ -105,10 +107,32 @@ export const AdminAbout = () => {
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = evt.target;
-    setValues({
-      ...values,
-      [name]: value,
-    });
+    if (name === "paragraph_ru") {
+      setValues({
+        ...values,
+        paragraph: {
+          ...values.paragraph,
+          ru: value,
+        },
+      });
+    }
+
+    if (name === "paragraph_en") {
+      setValues({
+        ...values,
+        paragraph: {
+          ...values.paragraph,
+          en: value,
+        },
+      });
+    }
+
+    if (name === "position") {
+      setValues({
+        ...values,
+        position: Number(value),
+      });
+    }
   };
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
@@ -117,31 +141,53 @@ export const AdminAbout = () => {
 
   const inputs: InputUIProps[] = [
     {
-      label: "Параграф",
-      name: "paragraph",
+      label: "Параграф RU",
+      name: "paragraph_ru",
       type: "text",
-      value: values.paragraph,
+      value: values.paragraph.ru,
       variant: "outlined",
-      error: values.paragraph ? "" : "Поле должно быть заполненным",
+      error: values.paragraph.ru ? "" : "Поле должно быть заполненным",
       required: true,
       color: "primary",
       helperText: "Введите текст пара��рафа",
       sx: {
         "& .MuiInputBase-input": {
-          color: "#fff", // ��вет текста внутри поля
+          color: "#fff",
         },
         "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: "#fff", // ��вет обводки внутри поля
+          borderColor: "#fff",
         },
         "& .MuiInputLabel-root": {
-          color: "#fff", // Цвет лейбла
+          color: "#fff",
+        },
+      },
+    },
+    {
+      label: "Параграф EN",
+      name: "paragraph_en",
+      type: "text",
+      value: values.paragraph.en,
+      variant: "outlined",
+      error: values.paragraph.en ? "" : "Поле должно быть заполненным",
+      required: true,
+      color: "primary",
+      helperText: "Введите текст пара��рафа",
+      sx: {
+        "& .MuiInputBase-input": {
+          color: "#fff",
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderColor: "#fff",
+        },
+        "& .MuiInputLabel-root": {
+          color: "#fff",
         },
       },
     },
     {
       label: "Позиция",
       name: "position",
-      type: "number",
+      type: "text",
       value: values.position,
       variant: "outlined",
       error: values.position ? "" : "Поле должно быть заполненным",
@@ -150,13 +196,13 @@ export const AdminAbout = () => {
       helperText: "Введите номер позиции параграфа",
       sx: {
         "& .MuiInputBase-input": {
-          color: "#fff", // ��вет текста внутри поля
+          color: "#fff",
         },
         "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: "#fff", // ��вет обводки внутри поля
+          borderColor: "#fff",
         },
         "& .MuiInputLabel-root": {
-          color: "#fff", // Цвет лейбла
+          color: "#fff",
         },
       },
     },
@@ -169,8 +215,8 @@ export const AdminAbout = () => {
       color: "primary",
       sx: {
         "&.Mui-disabled": {
-          backgroundColor: "#555", // Серый фон для неактивной кнопки
-          color: "#fff", // Белый текст для контраста
+          backgroundColor: "#555",
+          color: "#fff",
         },
       },
     },
@@ -181,8 +227,8 @@ export const AdminAbout = () => {
       color: "primary",
       sx: {
         "&.Mui-disabled": {
-          backgroundColor: "#555", // Серый фон для неактивной кнопки
-          color: "#fff", // Белый текст для контраста
+          backgroundColor: "#555",
+          color: "#fff",
         },
       },
     },
@@ -190,11 +236,7 @@ export const AdminAbout = () => {
 
   if (isLoading) return <PreloaderUI />;
   if (error)
-    return (
-      <p className={styles.admin_events__event__error}>
-        Что-то пошло не так, но мы это исправим!
-      </p>
-    );
+    return <p className={styles.admin_events__event__error}>{t("error")}</p>;
 
   return (
     <>
@@ -204,8 +246,8 @@ export const AdminAbout = () => {
             .sort((a, b) => a.position - b.position)
             .map((bio) => {
               return (
-                <div className={styles.admin_bios__bio}>
-                  <ParagraphUI key={bio.id} paragraph={bio} />
+                <div className={styles.admin_bios__bio} key={bio.id}>
+                  <ParagraphUI paragraph={bio} />
                   <div className={styles.admin_bios__bio__buttons}>
                     <ButtonUI
                       buttonText="Edit"

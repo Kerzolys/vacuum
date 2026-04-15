@@ -20,6 +20,7 @@ import {
 import { AdminLayoutUI } from "../../components/ui/admin-layout-ui/admin-layout-ui";
 
 import styles from "./admin-events.module.scss";
+import { useTranslation } from "react-i18next";
 
 export const AdminEvents = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,11 +30,16 @@ export const AdminEvents = () => {
   const [values, setValues] = useState<TEvent>({
     date: "",
     time: "",
-    location: "",
-    title: "",
-    program: [],
+    location: { ru: "", en: "" },
+    title: { ru: "", en: "" },
+    program: {
+      ru: [],
+      en: [],
+    },
     link: "",
   });
+
+  const { t } = useTranslation();
 
   const { data, error, isLoading } = useSWR("events", fetchEvents);
 
@@ -41,9 +47,12 @@ export const AdminEvents = () => {
     setValues({
       date: "",
       time: "",
-      location: "",
-      title: "",
-      program: [],
+      location: { ru: "", en: "" },
+      title: { ru: "", en: "" },
+      program: {
+        ru: [],
+        en: [],
+      },
       link: "",
     });
     setModalType("add");
@@ -105,7 +114,6 @@ export const AdminEvents = () => {
   };
 
   const handleOpenDelete = (event: TEvent) => {
-    console.log(event);
     setValues(event);
     setModalType("delete");
     setIsOpen(true);
@@ -113,7 +121,6 @@ export const AdminEvents = () => {
 
   const handleDelete = async (eventId: string) => {
     try {
-      console.log(eventId);
       await deleteEvent(eventId);
       mutate(
         "events",
@@ -131,12 +138,39 @@ export const AdminEvents = () => {
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = evt.target;
-    setValues({
-      ...values,
-      [name]:
-        name === "program"
-          ? value.split(";").map((item) => item.trim())
-          : value,
+
+    setValues((prev) => {
+      const keys = name.split("."); // ["location", "ru"]
+
+      if (keys.length === 1) {
+        return {
+          ...prev,
+          [name]: value,
+        };
+      }
+
+      const [field, lang] = keys as [
+        "location" | "title" | "program",
+        "ru" | "en",
+      ];
+
+      if (field === "program") {
+        return {
+          ...prev,
+          program: {
+            ...prev.program,
+            [lang]: value.split(";").map((i) => i.trim()),
+          },
+        };
+      }
+
+      return {
+        ...prev,
+        [field]: {
+          ...prev[field],
+          [lang]: value,
+        },
+      };
     });
   };
 
@@ -157,13 +191,13 @@ export const AdminEvents = () => {
       helperText: "Введите дату концерта",
       sx: {
         "& .MuiInputBase-input": {
-          color: "#fff", // ��вет текста внутри поля
+          color: "#fff",
         },
         "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: "#fff", // ��вет обводки внутри поля
+          borderColor: "#fff",
         },
         "& .MuiInputLabel-root": {
-          color: "#fff", // Цвет лейбла
+          color: "#fff",
         },
       },
     },
@@ -179,79 +213,145 @@ export const AdminEvents = () => {
       helperText: "Введите время концерта",
       sx: {
         "& .MuiInputBase-input": {
-          color: "#fff", // ��вет текста внутри поля
+          color: "#fff",
         },
         "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: "#fff", // ��вет обводки внутри поля
+          borderColor: "#fff",
         },
         "& .MuiInputLabel-root": {
-          color: "#fff", // Цвет лейбла
+          color: "#fff",
         },
       },
     },
     {
-      label: "Location",
-      name: "location",
+      label: "Location RU",
+      name: "location.ru",
       type: "text",
-      value: values.location,
+      value: values.location.ru,
       variant: "outlined",
-      error: values.location ? "" : "Поле должно быть заполненным",
+      error: values.location.ru ? "" : "Поле должно быть заполненным",
       required: true,
       color: "primary",
       helperText: "Введите место проведения концерта",
       sx: {
         "& .MuiInputBase-input": {
-          color: "#fff", // ��вет текста внутри поля
+          color: "#fff",
         },
         "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: "#fff", // ��вет обводки внутри поля
+          borderColor: "#fff",
         },
         "& .MuiInputLabel-root": {
-          color: "#fff", // Цвет лейбла
+          color: "#fff",
         },
       },
     },
     {
-      label: "Title",
-      name: "title",
+      label: "Location EN",
+      name: "location.en",
       type: "text",
-      value: values.title,
+      value: values.location.en,
       variant: "outlined",
-      error: values.title ? "" : "Поле должно быть заполненным",
+      error: values.location.en ? "" : "Поле должно быть заполненным",
+      required: true,
+      color: "primary",
+      helperText: "Введите место проведения концерта",
+      sx: {
+        "& .MuiInputBase-input": {
+          color: "#fff",
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderColor: "#fff",
+        },
+        "& .MuiInputLabel-root": {
+          color: "#fff",
+        },
+      },
+    },
+    {
+      label: "Title RU",
+      name: "title.ru",
+      type: "text",
+      value: values.title.ru,
+      variant: "outlined",
+      error: values.title.ru ? "" : "Поле должно быть заполненным",
       required: true,
       color: "primary",
       helperText: "Введите название концерта",
       sx: {
         "& .MuiInputBase-input": {
-          color: "#fff", // ��вет текста внутри поля
+          color: "#fff",
         },
         "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: "#fff", // ��вет обводки внутри поля
+          borderColor: "#fff",
         },
         "& .MuiInputLabel-root": {
-          color: "#fff", // Цвет лейбла
+          color: "#fff",
         },
       },
     },
     {
-      label: "Program",
-      name: "program",
+      label: "Title EN",
+      name: "title.en",
       type: "text",
-      value: values.program.join("; "),
+      value: values.title.en,
       variant: "outlined",
-      error: values.program.length > 0 ? "" : "Поле должно быть заполненным",
+      error: values.title.en ? "" : "Поле должно быть заполненным",
+      required: true,
+      color: "primary",
+      helperText: "Введите название концерта",
+      sx: {
+        "& .MuiInputBase-input": {
+          color: "#fff",
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderColor: "#fff",
+        },
+        "& .MuiInputLabel-root": {
+          color: "#fff",
+        },
+      },
+    },
+    {
+      label: "Program RU",
+      name: "program.ru",
+      type: "text",
+      value: values.program.ru.join("; "),
+      variant: "outlined",
+      error: values.program.ru.length > 0 ? "" : "Поле должно быть заполненным",
       required: false,
       color: "primary",
       helperText: "Введите программу концерта",
       sx: {
         "& .MuiInputBase-input": {
-          color: "#fff", // ��вет текста внутри поля
+          color: "#fff",
         },
         "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: "#fff", // ��вет обводки внутри поля
+          borderColor: "#fff",
         },
         "& .MuiInputLabel-root": {
-          color: "#fff", // Цвет лейбла
+          color: "#fff",
+        },
+      },
+    },
+    {
+      label: "Program EN",
+      name: "program.en",
+      type: "text",
+      value: values.program.en.join("; "),
+      variant: "outlined",
+      error: values.program.en.length > 0 ? "" : "Поле должно быть заполненным",
+      required: false,
+      color: "primary",
+      helperText: "Введите программу концерта",
+      sx: {
+        "& .MuiInputBase-input": {
+          color: "#fff",
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderColor: "#fff",
+        },
+        "& .MuiInputLabel-root": {
+          color: "#fff",
         },
       },
     },
@@ -267,13 +367,13 @@ export const AdminEvents = () => {
       helperText: "Введите ссылку на концерт",
       sx: {
         "& .MuiInputBase-input": {
-          color: "#fff", // ��вет текста внутри поля
+          color: "#fff",
         },
         "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: "#fff", // ��вет обводки внутри поля
+          borderColor: "#fff",
         },
         "& .MuiInputLabel-root": {
-          color: "#fff", // Цвет лейбла
+          color: "#fff",
         },
       },
     },
@@ -286,8 +386,8 @@ export const AdminEvents = () => {
       color: "primary",
       sx: {
         "&.Mui-disabled": {
-          backgroundColor: "#555", // Серый фон для неактивной кнопки
-          color: "#fff", // Белый текст для контраста
+          backgroundColor: "#555",
+          color: "#fff",
         },
       },
     },
@@ -298,8 +398,8 @@ export const AdminEvents = () => {
       color: "primary",
       sx: {
         "&.Mui-disabled": {
-          backgroundColor: "#555", // Серый фон для неактивной кнопки
-          color: "#fff", // Белый текст для контраста
+          backgroundColor: "#555",
+          color: "#fff",
         },
       },
     },
@@ -307,11 +407,7 @@ export const AdminEvents = () => {
 
   if (isLoading) return <PreloaderUI />;
   if (error)
-    return (
-      <p className={styles.admin_events__event__error}>
-        Что-то пошло не так, но мы это исправим!
-      </p>
-    );
+    return <p className={styles.admin_events__event__error}>{t("error")}</p>;
 
   return (
     <>
@@ -320,11 +416,11 @@ export const AdminEvents = () => {
           {data!.length > 0 ? (
             data!.map((event) => {
               return (
-                <div className={styles.admin_events__event}>
+                <div className={styles.admin_events__event} key={event.id}>
                   {event.archived === true && (
                     <span style={{ color: "red" }}>Archived</span>
                   )}
-                  <EventUI key={event.id} event={event} />
+                  <EventUI event={event} />
                   <div className={styles.admin_events__event__buttons}>
                     <ButtonUI
                       buttonText="Edit"

@@ -9,7 +9,6 @@ export const InputUI: React.FC<InputUIProps> = ({
   value,
   disabled,
   type,
-  extraClass,
   error,
   customLabel,
   ...props

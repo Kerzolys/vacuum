@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import {
+import type {
   TRegistrationStringQuartetValues,
   TStringQuartetApplication,
 } from "../../utils/types";
@@ -14,7 +14,7 @@ const uploadToYandex = async (file: File) => {
   const arrayBuffer = await file.arrayBuffer();
 
   const params = {
-    Bucket: process.env.REACT_APP_YANDEX_BUCKET_NAME!,
+    Bucket: import.meta.env.REACT_APP_YANDEX_BUCKET_NAME!,
     Key: `lab/string_quartets/${id}/${file.name}`,
     Body: new Uint8Array(arrayBuffer),
     ContentType: file.type,
@@ -26,7 +26,7 @@ const uploadToYandex = async (file: File) => {
 
   try {
     await s3Client.send(command);
-    return `https://storage.yandexcloud.net/${process.env.REACT_APP_YANDEX_BUCKET_NAME}/lab/string_quartets/${id}/${file.name}`;
+    return `https://storage.yandexcloud.net/${import.meta.env.REACT_APP_YANDEX_BUCKET_NAME}/lab/string_quartets/${id}/${file.name}`;
   } catch (err) {
     console.error("Error uploading file:", err);
     throw err;

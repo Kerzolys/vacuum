@@ -6,9 +6,11 @@ import type { TVideo } from "../../utils/types";
 import { fetchVideos } from "../../services/fetcher/fetcher";
 import { PreloaderUI } from "../ui/preloader-ui/preloader-ui";
 import { convertToEmbedUrl } from "../../features/hooks/convertToEmbed";
+import { useTranslation } from "react-i18next";
 
 export const Media = () => {
   const { data, error, isLoading } = useSWR<TVideo[]>("videos", fetchVideos);
+  const { t } = useTranslation();
 
   const updatedData = data?.map((video) => ({
     ...video,
@@ -16,7 +18,7 @@ export const Media = () => {
   }));
 
   if (isLoading) return <PreloaderUI />;
-  if (error) return <p>Что-то пошло не так, но мы это исправим!</p>;
+  if (error) return <p>{t("error")}</p>;
 
   return (
     <section id="media" className={styles.media}>

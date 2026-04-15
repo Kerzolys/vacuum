@@ -16,6 +16,7 @@ import type { InputUIProps } from "../../components/ui/input-ui/type";
 import type { ButtonUIProps } from "../../components/ui/button-ui/type";
 
 import styles from "./admin-gallery.module.scss";
+import { useTranslation } from "react-i18next";
 
 export const AdminGallery = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,6 +28,7 @@ export const AdminGallery = () => {
     link: "",
   });
   const [file, setFile] = useState<File | null>(null);
+  const { t } = useTranslation();
 
   const { data, error, isLoading } = useSWR("images", fetchImages);
 
@@ -138,7 +140,7 @@ export const AdminGallery = () => {
   ];
 
   if (isLoading) return <PreloaderUI />;
-  if (error) return <p>Что-то пошло не так, но мы это исправим!</p>;
+  if (error) return <p>{t("error")}</p>;
   return (
     <>
       <AdminLayoutUI>

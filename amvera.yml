@@ -1,10 +1,10 @@
 meta:
-  environment: node
+  environment: static_web
   toolchain:
-    name: browser
+    name: npm
     version: "22"
 build:
   additionalCommands: ""
   artifacts:
-    build/*: /
+    dist/*: /
 run: {}

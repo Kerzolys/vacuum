@@ -11,7 +11,7 @@ import { AdminAbout } from "../../pages/admin-about/admin-about";
 // import { Laboratory } from "../../pages/laboratory/laboratory";
 // import { AdminLaboratory } from "../../pages/admin-laboratory/admin-laboratory";
 import { ProtectedRoute } from "../protected-route/protected-route";
-import { PreloaderUI } from "../ui/preloader-ui/preloader-ui";
+// import { PreloaderUI } from "../ui/preloader-ui/preloader-ui";
 
 function App() {
   const { initialized } = useSelector(userSelector);

@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { InputUIProps } from "./type";
+import type { InputUIProps } from "./type";
 import styles from "./input-ui.module.scss";
 import classNames from "classnames";
 

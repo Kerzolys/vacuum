@@ -1,0 +1,25 @@
+.navbar {
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  height: 50px;
+  &_footer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: start;
+  }
+  &_admin {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    &_horizontal {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+    }
+  }
+}

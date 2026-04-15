@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TBio } from "../../utils/types";
+import type { TBio } from "../../utils/types";
 import {
   addBio,
   deleteBio,
@@ -16,8 +16,8 @@ import { ModalUI } from "../../components/ui/modal-ui/modal-ui";
 import { FormUI } from "../../components/ui/form-ui/form-ui";
 
 import styles from "./admin-about.module.scss";
-import { InputUIProps } from "../../components/ui/input-ui/type";
-import { ButtonUIProps } from "../../components/ui/button-ui/type";
+import type { InputUIProps } from "../../components/ui/input-ui/type";
+import type { ButtonUIProps } from "../../components/ui/button-ui/type";
 import { PreloaderUI } from "../../components/ui/preloader-ui/preloader-ui";
 
 export const AdminAbout = () => {
@@ -160,7 +160,6 @@ export const AdminAbout = () => {
         },
       },
     },
-    
   ];
   const buttons: ButtonUIProps[] = [
     {

@@ -1,6 +1,19 @@
 const admin = require("firebase-admin");
+const { uploadImage } = require("./uploadImages");
 
 const db = admin.firestore();
+
+const ADD_IMAGE_STEPS = [
+  { key: "title", question: "Введите название изображения:" },
+  { key: "link", question: "Загрузите изображение:" },
+];
+
+const DELETE_IMAGE_STEP = [
+  {
+    key: "id",
+    question: "Какое изображение вы хотите удалить (введите id события)?",
+  },
+];
 
 async function fetchImages() {
   const snapshot = await db.collection("images").get();
@@ -9,7 +22,7 @@ async function fetchImages() {
     const data = doc.data();
 
     return {
-      id: data.id,
+      id: doc.id,
       title: data.title,
       link: data.link,
     };
@@ -18,7 +31,7 @@ async function fetchImages() {
 
 async function getImagesList(chatId, sendMessage) {
   try {
-    const images = fetchImages();
+    const images = await fetchImages();
 
     if (images.length === 0) {
       await sendMessage(chatId, "Галлерея пуста");
@@ -38,6 +51,36 @@ async function getImagesList(chatId, sendMessage) {
     console.log(err);
 
     sendMessage(chatId, `Ошибка получения галлереи: ${err.message}`);
+  }
+}
+
+async function startAddImageFlow(userId, chatId, sendMessage) {
+  await db.collection("imageDrafts").doc(String(userId)).set({
+    flow: "add",
+    currentStepIndex: 0,
+    data: {},
+  });
+
+  await sendMessage(
+    chatId,
+    `${ADD_IMAGE_STEPS[0].question}\n(можно написать /skip, чтобы пропустить)`,
+  );
+}
+
+async function handleAddFlow(draftRef, draft, chatId, text, sendMessage) {
+  let { currentStepIndex, data } = draft;
+  const step = ADD_IMAGE_STEPS[currentStepIndex];
+
+  const isSkip = text.toLowerCase() === "/skip";
+
+  if (!isSkip) {
+    data[step.key] = text;
+  }
+
+  currentStepIndex++
+
+  if(currentStepIndex >= ADD_IMAGE_STEPS.length) {
+    const link = await uploadImage()
   }
 }
 

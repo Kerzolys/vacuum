@@ -2,7 +2,7 @@ import { Slider } from "../slider/slider";
 import useSWR from "swr";
 
 import styles from "./media.module.scss";
-import { TVideo } from "../../utils/types";
+import type { TVideo } from "../../utils/types";
 import { fetchVideos } from "../../services/fetcher/fetcher";
 import { PreloaderUI } from "../ui/preloader-ui/preloader-ui";
 import { convertToEmbedUrl } from "../../features/hooks/convertToEmbed";

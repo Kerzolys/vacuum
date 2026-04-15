@@ -1,0 +1,56 @@
+.container {
+  padding: 20px;
+  inline-size: 300px;
+  block-size: 300px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  box-shadow: 5px 5px 25px 0 rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  color: #fff;
+  line-height: 150%;
+  &:hover {
+    transform: scale(1.1);
+  }
+  &__img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    & img {
+      inline-size: 100%;
+      block-size: 250px;
+      object-fit: contain;
+    }
+  }
+  & h3 {
+    text-align: center;
+    font-weight: 600;
+    font-size: 20px;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  &__img {
+    & img {
+      block-size: 450px;
+      object-fit: contain;
+      @media screen and (max-width: 767px) {
+        block-size: 200px;
+      }
+    }
+  }
+  &__info {
+    & p {
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 150%;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+  }
+}

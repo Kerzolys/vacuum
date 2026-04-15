@@ -9,7 +9,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import {
+import type {
   TBio,
   TComposerApplication,
   TEvent,

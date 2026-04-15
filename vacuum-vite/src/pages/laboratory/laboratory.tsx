@@ -1,0 +1,71 @@
+import { Footer } from "../../components/footer/footer";
+import { LaboratoryInfo } from "../../components/laboratory-info/laboratory-info";
+import logo from "../../assets/images/coverimage-5.png";
+import { ButtonUI } from "../../components/ui/button-ui/button-ui";
+import { useNavigate } from "react-router-dom";
+import { TabUI } from "../../components/ui/tab-ui/tab-ui";
+import { useState } from "react";
+import { LaboratoryTermsAndConditions } from "../../components/laboratory-terms-and-conditions/laboratory-terms-and-conditions";
+import { LaboratoryRegistration } from "../../components/laboratory-registration/laboratory-registration";
+
+import styles from "./laboratory.module.scss";
+import { LaboratorySchedule } from "../../components/laboratory-schedule/laboratory-schedule";
+
+type TabType = "lab" | "terms and conditions" | "registration" | "schedule";
+const tabs: { id: number; tabName: string; type: TabType }[] = [
+  {
+    id: 1,
+    tabName: "Лаборатория",
+    type: "lab",
+  },
+  {
+    id: 2,
+    tabName: "Расписание лаборатории",
+    type: "schedule",
+  },
+];
+
+export const Laboratory = () => {
+  const [tabType, setTabType] = useState<TabType>("lab");
+  const navigate = useNavigate();
+
+  const navigateToHome = () => navigate("/");
+  const handleChangeTabType = (type: TabType) => setTabType(type);
+
+  return (
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <div className={styles.header__content}>
+          <div className={styles.header__logo}>
+            <img src={logo} alt="logo" onClick={navigateToHome} />
+          </div>
+          <nav>
+            <ButtonUI onClick={navigateToHome} buttonText="Back Home" />
+          </nav>
+        </div>
+      </header>
+      <div className={styles.main}>
+        <div className={styles.main__content}>
+          <h2>Vacuum Quartet Lab</h2>
+          <div className={styles.main__tabsBlock}>
+            {tabs.map((t) => (
+              <TabUI
+                tabName={t.tabName}
+                key={t.id}
+                onClick={() => handleChangeTabType(t.type)}
+              />
+            ))}
+          </div>
+          {tabType === "lab" && <LaboratoryInfo />}
+          {tabType === "schedule" && <LaboratorySchedule />}
+
+          {/* {tabType === "terms and conditions" && (
+            <LaboratoryTermsAndConditions />
+          )} */}
+          {/* {tabType === "registration" && <LaboratoryRegistration />} */}
+        </div>
+      </div>
+      <Footer />
+    </div>
+  );
+};

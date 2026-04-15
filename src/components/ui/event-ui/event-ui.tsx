@@ -1,5 +1,5 @@
 import styles from "./event-ui.module.scss";
-import { EventUIProps } from "./type";
+import type { EventUIProps } from "./type";
 
 export const EventUI: React.FC<EventUIProps> = ({ event }) => {
   return (

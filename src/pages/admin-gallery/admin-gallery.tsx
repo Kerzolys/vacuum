@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AdminLayoutUI } from "../../components/ui/admin-layout-ui/admin-layout-ui";
-import { TImage } from "../../utils/types";
+import type { TImage } from "../../utils/types";
 import useSWR, { mutate } from "swr";
 import {
   addImage,
@@ -12,8 +12,8 @@ import { ButtonUI } from "../../components/ui/button-ui/button-ui";
 import { Add, Delete } from "@mui/icons-material";
 import { FormUI } from "../../components/ui/form-ui/form-ui";
 import { ModalUI } from "../../components/ui/modal-ui/modal-ui";
-import { InputUIProps } from "../../components/ui/input-ui/type";
-import { ButtonUIProps } from "../../components/ui/button-ui/type";
+import type { InputUIProps } from "../../components/ui/input-ui/type";
+import type { ButtonUIProps } from "../../components/ui/button-ui/type";
 
 import styles from "./admin-gallery.module.scss";
 
@@ -201,4 +201,3 @@ export const AdminGallery = () => {
     </>
   );
 };
-

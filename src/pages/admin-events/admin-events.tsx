@@ -5,9 +5,9 @@ import { PreloaderUI } from "../../components/ui/preloader-ui/preloader-ui";
 import { ModalConfirmation } from "../../components/modal-confirmation/modal-confirmation";
 import { ModalUI } from "../../components/ui/modal-ui/modal-ui";
 import { FormUI } from "../../components/ui/form-ui/form-ui";
-import { InputUIProps } from "../../components/ui/input-ui/type";
-import { ButtonUIProps } from "../../components/ui/button-ui/type";
-import { TEvent } from "../../utils/types";
+import type { InputUIProps } from "../../components/ui/input-ui/type";
+import type { ButtonUIProps } from "../../components/ui/button-ui/type";
+import type { TEvent } from "../../utils/types";
 import { Add, Archive, Delete, Edit } from "@mui/icons-material";
 import useSWR, { mutate } from "swr";
 import {
@@ -24,7 +24,7 @@ import styles from "./admin-events.module.scss";
 export const AdminEvents = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalType, setModalType] = useState<"add" | "edit" | "delete" | null>(
-    null,
+    null
   );
   const [values, setValues] = useState<TEvent>({
     date: "",
@@ -56,7 +56,7 @@ export const AdminEvents = () => {
       mutate(
         "events",
         (currentEvents: TEvent[] = []) => [...currentEvents, newEvent],
-        false,
+        false
       );
       setIsOpen(false);
     } catch (err) {
@@ -77,9 +77,9 @@ export const AdminEvents = () => {
         "events",
         (currentEvents: TEvent[] = []) =>
           currentEvents.map((event) =>
-            event.id === updatedEvent.id ? updatedEvent : event,
+            event.id === updatedEvent.id ? updatedEvent : event
           ),
-        false,
+        false
       );
       setIsOpen(false);
     } catch (err) {
@@ -95,9 +95,9 @@ export const AdminEvents = () => {
         "events",
         (currentEvents: TEvent[] = []) =>
           currentEvents.map((e) =>
-            e.id === event.id ? { ...e, archived: true } : e,
+            e.id === event.id ? { ...e, archived: true } : e
           ),
-        false,
+        false
       );
     } catch (err) {
       console.error(`Error archiving event: ${err}`);
@@ -119,7 +119,7 @@ export const AdminEvents = () => {
         "events",
         (currentEvents: TEvent[] = []) =>
           currentEvents.filter((event) => event.id !== eventId),
-        false,
+        false
       );
       setIsOpen(false);
     } catch (err) {

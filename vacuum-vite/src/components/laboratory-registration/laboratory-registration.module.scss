@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100vh;
+  margin-block-end: 80px;
+  &__buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 40px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 25px 0 rgba(255, 255, 255, 0.5);
+    padding: 20px;
+    max-inline-size: 300px;
+    inline-size: 100%;
+  }
+  & p,
+  & a {
+    color: #fff;
+    line-height: 150%;
+    font-weight: 500;
+    font-size: 18px;
+  }
+}
+
+.backButton {
+  align-self: flex-start;
+}

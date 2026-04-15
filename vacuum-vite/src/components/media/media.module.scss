@@ -1,0 +1,21 @@
+.media {
+  display: flex;
+  justify-content: center;
+  background-image: url('../../assets/images/media-section.jpg'); // Указываем путь к фото
+  background-attachment: fixed;
+  background-size: cover; // Подгоняем фото под контейнер
+  background-position: center; // Центрируем фото
+  position: relative; // Устанавливаем контекст позиционирования для дочерних элементов
+  z-index: 1;
+  padding-inline: 10px;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); // Прозрачный слой поверх изображения
+    z-index: -1; // Отправляем фон позади контента
+  }
+}

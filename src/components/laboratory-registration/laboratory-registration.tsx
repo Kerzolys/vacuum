@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styles from "./laboratory-registration.module.scss";
 import { ButtonUI } from "../ui/button-ui/button-ui";
-import { InputUIProps } from "../ui/input-ui/type";
+import type { InputUIProps } from "../ui/input-ui/type";
 import {
   TRegistrationComposerValues,
   TRegistrationStringQuartetValues,
 } from "../../utils/types";
-import { ButtonUIProps } from "../ui/button-ui/type";
+import type { ButtonUIProps } from "../ui/button-ui/type";
 import { FormUI } from "../ui/form-ui/form-ui";
 import { preparingComposerData } from "../../features/hooks/preparingComposerData";
 import { ModalUI } from "../ui/modal-ui/modal-ui";

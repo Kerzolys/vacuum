@@ -12,12 +12,18 @@ export const LangSwitchUI = () => {
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <span>🇬🇧</span>
-
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 4,
+        color: "#FFF",
+        fontSize: "14px",
+      }}
+    >
+      <span>en</span>
       <Switch checked={isRu} onChange={handleChange} />
-
-      <span>🇷🇺</span>
+      <span>ru</span>
     </div>
   );
 };

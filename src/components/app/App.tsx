@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import { Home } from "../../pages/home/home";
 import { Admin } from "../../pages/admin/admin";
-import { useDispatch, useSelector } from "../../services/store/store";
-import { checkAuth, userSelector } from "../../features/userSlice.ts/userSlice";
+import { useDispatch } from "../../services/store/store";
+import { checkAuth } from "../../features/userSlice.ts/userSlice";
 import { useEffect } from "react";
 import { AdminEvents } from "../../pages/admin-events/admin-events";
 import { AdminMedia } from "../../pages/admin-media/admin-media";
@@ -14,15 +14,8 @@ import { ProtectedRoute } from "../protected-route/protected-route";
 // import { PreloaderUI } from "../ui/preloader-ui/preloader-ui";
 
 function App() {
-  const { initialized } = useSelector(userSelector);
+  // const { initialized } = useSelector(userSelector);
   const dispatch = useDispatch();
-
-  console.log("APP RENDER", { initialized });
-
-  useEffect(() => {
-  console.log("CHECK AUTH START");
-  dispatch(checkAuth());
-}, []);
 
   useEffect(() => {
     dispatch(checkAuth());
